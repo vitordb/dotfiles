@@ -11,12 +11,9 @@ vim.g.maplocalleader = ' '
 
 -- Make line numbers default
 vim.opt.number = true
--- You can also add relative line numbers, for help with jumping.
---  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+-- You can also add relative line numbers, for help with jumping. Experiment for yourself to see if you like it! vim.opt.relativenumber = true
 
--- Enable mouse mode, can be useful for resizing splits for example!
-vim.opt.mouse = 'a'
+-- Enable mouse mode, can be useful for resizing splits for example! vim.opt.mouse = 'a'
 
 -- Don't show the mode, since it's already in status line
 vim.opt.showmode = false
@@ -163,6 +160,8 @@ require('lazy').setup {
     'christoomey/vim-tmux-navigator',
     config = function() end,
   },
+
+  { 'nvim-neotest/nvim-nio' },
 
   {
     'altermo/ultimate-autopair.nvim',
@@ -408,7 +407,7 @@ require('lazy').setup {
         update_cwd = true,
         update_focused_file = {
           enable = true,
-          update_cwd = true,
+          update_cwd = false,
           ignore_list = {},
         },
         actions = {
@@ -446,15 +445,27 @@ require('lazy').setup {
   -- See `:help gitsigns` to understand what the configuration keys do
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
-    opts = {
-      signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
-      },
-    },
+
+    config = function() -- Esta função é chamada para configurar o plugin
+      require('gitsigns').setup {
+        -- Configurações do plugin aqui
+        signs = {
+          add = { text = '+' },
+          change = { text = '~' },
+          delete = { text = '_' },
+          topdelete = { text = '‾' },
+          changedelete = { text = '~' },
+        },
+      }
+
+      -- Aqui você adiciona o mapeamento de teclas
+      vim.keymap.set('n', '<leader>gp', ':Gitsigns preview_hunk<CR>', {})
+      vim.keymap.set('n', '<leader>gt', ':Gitsigns toggle_current_line_blame<CR>', {})
+    end,
+  },
+
+  {
+    'tpope/vim-fugitive',
   },
 
   -- NOTE: Plugins can also be configured to run lua code when they are loaded.
