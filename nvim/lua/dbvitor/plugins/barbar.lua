@@ -44,8 +44,17 @@ return {
       -- buffer pick map
       map('n', '<leader>m', '<cmd>BufferPick<cr>', { noremap = true, silent = true })
     end,
+
     opts = {
       -- Coloque suas opções de configuração para barbar.nvim aqui
+      --
+      -- hide = { extensions = true, inactive = true },
+      gitsigns = {
+        added = { enabled = true, icon = '+' },
+        changed = { enabled = true, icon = '~' },
+        deleted = { enabled = true, icon = '-' },
+      },
+      separator_at_end = false,
     },
     version = '^1.0.0',
   },
