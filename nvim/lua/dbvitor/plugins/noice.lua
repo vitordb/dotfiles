@@ -1,109 +1,167 @@
+-- return {
+--   {
+--     'folke/noice.nvim',
+--     event = 'VeryLazy',
+--     config = function()
+--       require('noice').setup {
+--         lsp = {
+--           -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+--           override = {
+--             ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
+--             ['vim.lsp.util.stylize_markdown'] = true,
+--             ['cmp.entry.get_documentation'] = true, -- requires hrsh7th/nvim-cmp
+--           },
+--         },
+--         -- you can enable a preset for easier configuration
+--         presets = {
+--           bottom_search = true, -- use a classic bottom cmdline for search
+--           command_palette = true, -- position the cmdline and popupmenu together
+--           long_message_to_split = false, -- long messages will be sent to a split
+--           inc_rename = false, -- enables an input dialog for inc-rename.nvim
+--           lsp_doc_border = false, -- add a border to hover docs and signature help
+--         },
+--
+--         views = {
+--           cmdline_popup = {
+--             position = {
+--               row = 5,
+--               col = '50%',
+--             },
+--             size = {
+--               width = 60,
+--               height = 'auto',
+--             },
+--           },
+--           popupmenu = {
+--             relative = 'editor',
+--             position = {
+--               row = 8,
+--               col = '50%',
+--             },
+--             size = {
+--               width = 60,
+--               height = 10,
+--             },
+--             border = {
+--               style = 'single',
+--               padding = { 0, 1 },
+--             },
+--             win_options = {
+--               winhighlight = { Normal = 'Normal', FloatBorder = 'DiagnosticInfo' },
+--             },
+--           },
+--         },
+--       }
+--     end,
+--     dependencies = {
+--       'muniftanjim/nui.nvim',
+--       'rcarriga/nvim-notify',
+--     },
+--   },
+-- }
+--
 return {
-  {
-    'folke/noice.nvim',
-    event = 'VeryLazy',
-    config = function()
-      -- Configurações de realce e autocmds específicos
-      local noice_hl = vim.api.nvim_create_augroup('NoiceHighlights', {})
-      local noice_cmd_types = {
-        CmdLine = 'Constant',
-        Input = 'Constant',
-        Calculator = 'Constant',
-        Lua = 'Constant',
-        Filter = 'Constant',
-        Rename = 'Constant',
-        Substitute = 'NoiceCmdlinePopupBorderSearch',
-        Help = 'Todo',
-      }
-      vim.api.nvim_clear_autocmds { group = noice_hl }
-      vim.api.nvim_create_autocmd('BufEnter', {
-        group = noice_hl,
-        callback = function()
-          for type, hl in pairs(noice_cmd_types) do
-            vim.api.nvim_set_hl(0, 'NoiceCmdlinePopupBorder' .. type, {})
-            vim.api.nvim_set_hl(0, 'NoiceCmdlinePopupBorder' .. type, { link = hl })
-          end
-          vim.api.nvim_set_hl(0, 'NoiceConfirmBorder', {})
-          vim.api.nvim_set_hl(0, 'NoiceConfirmBorder', { link = 'Constant' })
-        end,
-      })
-
-      -- Definições de estilo para o cmdline
-      local cmdline_opts = {
-        border = {
-          style = 'rounded',
-          text = { top = '' },
-        },
-      }
-
-      -- Configuração do Noice
-      local ok, noice = pcall(require, 'noice')
-      if not ok then
-        return
-      end
-
-      noice.setup {
-        cmdline = {
-          view = 'cmdline_popup',
-          format = {
-            -- Configurações detalhadas para cada tipo de cmdline
-          },
-          opts = cmdline_opts,
-        },
-        messages = {
-          view_search = false,
-        },
-        lsp = {
-          override = {
-            ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
-            ['vim.lsp.util.stylize_markdown'] = true,
-            ['cmp.entry.get_documentation'] = true,
-          },
-          hover = { enabled = true },
-          signature = { enabled = true },
-          documentation = {
-            opts = {
-              win_options = {
-                concealcursor = 'n',
-                conceallevel = 3,
-                winhighlight = {
-                  Normal = 'Normal',
-                  FloatBorder = 'Todo',
-                },
-              },
-            },
-          },
-        },
-        views = {
-          split = { enter = true },
-          mini = { win_options = { winblend = 100 } },
-        },
-        presets = {
-          long_message_to_split = true,
-          lsp_doc_border = true,
-        },
-        routes = {
-          -- Aqui você pode definir rotas específicas para mensagens e comportamentos
-        },
-      }
-
-      -- Mapeamentos de teclas para funcionalidades de rolagem do LSP
-      vim.keymap.set({ 'n', 'i', 's' }, '<c-j>', function()
-        if not require('noice.lsp').scroll(4) then
-          return '<c-j>'
-        end
-      end, { silent = true, expr = true })
-
-      vim.keymap.set({ 'n', 'i', 's' }, '<c-k>', function()
-        if not require('noice.lsp').scroll(-4) then
-          return '<c-k>'
-        end
-      end, { silent = true, expr = true })
-    end,
-    dependencies = {
-      'muniftanjim/nui.nvim',
-      'rcarriga/nvim-notify',
-      -- Aqui você deve adicionar qualquer outra dependência necessária
+  'folke/noice.nvim',
+  event = 'VeryLazy',
+  dependencies = {
+    'MunifTanjim/nui.nvim',
+    'rcarriga/nvim-notify',
+  },
+  opts = {
+    lsp = {
+      -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+      override = {
+        ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
+        ['vim.lsp.util.stylize_markdown'] = true,
+        ['cmp.entry.get_documentation'] = true,
+      },
     },
+    routes = {
+      {
+        filter = {
+          event = 'msg_show',
+          any = {
+            { find = '%d+L, %d+B' },
+            { find = '; after #%d+' },
+            { find = '; before #%d+' },
+            { find = 'fewer lines' },
+          },
+        },
+        view = 'mini',
+      },
+    },
+    -- you can enable a preset for easier configuration
+    presets = {
+      bottom_search = true, -- use a classic bottom cmdline for search
+      command_palette = false, -- position the cmdline and popupmenu together
+      long_message_to_split = true, -- long messages will be sent to a split
+      inc_rename = true, -- enables an input dialog for inc-rename.nvim
+      lsp_doc_border = false, -- add a border to hover docs and signature help
+    },
+    views = {
+      -- Clean cmdline_popup + palette
+      cmdline_popup = {
+        position = {
+          row = 10,
+          col = '50%',
+        },
+        border = {
+          style = 'none',
+          padding = { 2, 3 },
+        },
+        size = {
+          min_width = 60,
+          width = 'auto',
+          height = 'auto',
+        },
+        win_options = {
+          winhighlight = { NormalFloat = 'NormalFloat', FloatBorder = 'FloatBorder' },
+        },
+      },
+      cmdline_popupmenu = {
+        relative = 'editor',
+        position = {
+          row = 13,
+          col = '50%',
+        },
+        size = {
+          width = 60,
+          height = 'auto',
+          max_height = 15,
+        },
+        border = {
+          style = 'none',
+          padding = { 0, 3 },
+        },
+        win_options = {
+          winhighlight = { NormalFloat = 'NormalFloat', FloatBorder = 'NoiceCmdlinePopupBorder' },
+        },
+      },
+      hover = {
+        border = {
+          style = 'single',
+        },
+      },
+      confirm = {
+        border = {
+          style = 'single',
+        },
+      },
+      popup = {
+        border = {
+          style = 'single',
+        },
+      },
+    },
+  },
+  -- stylua: ignore
+  keys = {
+    { "<S-Enter>", function() require("noice").redirect(vim.fn.getcmdline()) end, mode = "c", desc = "Redirect Cmdline" },
+    { "<leader>snl", function() require("noice").cmd("last") end, desc = "Noice Last Message" },
+    { "<leader>snh", function() require("noice").cmd("history") end, desc = "Noice History" },
+    { "<leader>sna", function() require("noice").cmd("all") end, desc = "Noice All" },
+    { "<leader>snd", function() require("noice").cmd("dismiss") end, desc = "Dismiss All" },
+    { "<c-f>", function() if not require("noice.lsp").scroll(4) then return "<c-f>" end end, silent = true, expr = true, desc = "Scroll forward", mode = {"i", "n", "s"} },
+    { "<c-b>", function() if not require("noice.lsp").scroll(-4) then return "<c-b>" end end, silent = true, expr = true, desc = "Scroll backward", mode = {"i", "n", "s"}},
   },
 }
