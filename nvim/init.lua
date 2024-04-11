@@ -15,7 +15,8 @@ vim.opt.relativenumber = true
 vim.opt.signcolumn = 'number'
 -- You can also add relative line numbers, for help with jumping. Experiment for yourself to see if you like it! vim.opt.relativenumber = true
 
--- Enable mouse mode, can be useful for resizing splits for example! vim.opt.mouse = 'a'
+-- Enable mouse mode, can be useful for resizing splits for example!
+vim.opt.mouse = 'a'
 
 -- Don't show the mode, since it's already in status line
 vim.opt.showmode = false
@@ -137,7 +138,7 @@ vim.opt.rtp:prepend(lazypath)
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup {
 
-  { import = 'dbvitor.plugins' },
+  { import = 'plugins' },
 
   { -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
@@ -559,6 +560,20 @@ require('lazy').setup {
     lazy = false, -- make sure we load this during startup if it is your main colorscheme
     priority = 1000, -- make sure to load this before all the other start plugins
     config = function()
+      require('catppuccin').setup {
+        integrations = {
+          cmp = true,
+          gitsigns = true,
+          nvimtree = true,
+          treesitter = true,
+          notify = false,
+          mini = {
+            enabled = true,
+            indentscope_color = '',
+          },
+        },
+      }
+
       -- Load the colorscheme here
       vim.cmd.colorscheme 'catppuccin'
 

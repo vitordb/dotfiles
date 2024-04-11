@@ -45,6 +45,15 @@ return {
           -- Coloque suas demais configurações aqui
         },
       }
+
+      -- Agora adicionamos os mapeamentos de teclas
+      local map = vim.api.nvim_set_keymap
+      local opts = { noremap = true, silent = true }
+
+      map('n', '<leader>bp', ':BufferLinePick<CR>', opts)
+      map('n', '<leader>bc', ':BufferLinePickClose<CR>', opts)
+      map('n', '<A-.>', ':BufferLineCycleNext<CR>', { noremap = true, silent = true })
+      map('n', '<A-,>', ':BufferLineCyclePrev<CR>', { noremap = true, silent = true })
     end,
   },
 }

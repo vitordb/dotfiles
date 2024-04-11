@@ -15,6 +15,11 @@ return {
             },
           },
         },
+        pickers = {
+          find_files = {
+            hidden = true,
+          },
+        },
       }
 
       -- Configurar o keymap para abrir o file_browser do telescope
