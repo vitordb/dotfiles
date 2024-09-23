@@ -1,0 +1,46 @@
+[user]
+	name = Vítor Duarte Buchweitz
+	email = dbvitor@gmail.com
+
+[filter "lfs"]
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+# [commit]
+# 	gpgsign = true
+# [gpg]
+# 	program = gpg
+# [url "git@github.com:"]
+# 	insteadOf = https://github.com/
+# [include]
+#     path = ~/.gitconfig.personal
+#
+[includeIf "gitdir:~/development/gitlab.com/fretebras/"]
+    path = ~/development/gitlab.com/fretebras/.gitconfig
+
+[pull]
+	rebase = true
+
+[fetch]
+  prune = true
+
+[core]
+    pager = delta
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    navigate = true    # use n and N to move between diff sections
+    light = false      # set to true if you're in a terminal w/ a light background color (e.g. the default macOS terminal)
+
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default
+
+[include]
+    path = ~/.gitconfig.personal
+
