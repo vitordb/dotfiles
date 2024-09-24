@@ -25,12 +25,11 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # HYPHEN_INSENSITIVE="true"
 
 # Uncomment one of the following lines to change the auto-update behavior
-# zstyle ':omz:update' mode disabled  # disable automatic updates
-# zstyle ':omz:update' mode auto      # update automatically without asking
+zstyle ':omz:update' mode auto      # update automatically without asking
 # zstyle ':omz:update' mode reminder  # just remind me to update when it's time
 
 # Uncomment the following line to change how often to auto-update (in days).
-# zstyle ':omz:update' frequency 13
+zstyle ':omz:update' frequency 13
 
 # Uncomment the following line to disable auto-setting terminal title.
 # DISABLE_AUTO_TITLE="true"
@@ -38,14 +37,11 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Uncomment the following line to enable command auto-correction.
 # ENABLE_CORRECTION="true"
 
-# Uncomment the following line to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
+# Uncomment the following line to disable marking untracked files under VCS as dirty.
 # DISABLE_UNTRACKED_FILES_DIRTY="true"
 
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# HIST_STAMPS="mm/dd/yyyy"
+# Uncomment the following line if you want to change the command execution time stamp in history.
+HIST_STAMPS="mm/dd/yyyy"
 
 # Which plugins would you like to load?
 plugins=(
@@ -68,13 +64,50 @@ plugins=(
     vscode
     sudo
     z
-    ohmyzsh-full-autoupdate
 )
+
 source $ZSH/oh-my-zsh.sh
 
-# User configuration
-alias frete='cd /Users/dbvitor/development/gitlab.com/fretebras'
-alias orun='cd /Users/dbvitor/development/gitlab.com/orun'
+# Check if running on WSL or MacOS and set environment variables accordingly
+if grep -qEi "(Microsoft|WSL)" /proc/version &> /dev/null; then
+    # WSL-specific settings
+
+    # NVM setup for WSL
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+
+    # Flutter configuration for WSL
+    export PATH="$PATH:$HOME/flutter/bin"
+
+    # Python configuration for WSL
+    export PYTHON="$HOME/.pyenv/versions/3.10.6/bin/python"
+
+else
+    # MacOS-specific settings
+
+    # Load Homebrew if installed
+    if command -v brew &> /dev/null; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    fi
+
+    # NVM setup for Mac
+    export NVM_DIR=~/.nvm
+    [ -s "$(brew --prefix nvm)/nvm.sh" ] && source "$(brew --prefix nvm)/nvm.sh"
+
+    # Flutter configuration for MacOS
+    export PATH="$PATH:`pwd`/flutter/bin"
+
+    # Java & Android configuration for MacOS
+    export ANDROID_HOME=$HOME/Library/Android/sdk
+    export PATH=$PATH:$ANDROID_HOME/emulator
+    export PATH=$PATH:$ANDROID_HOME/platform-tools
+    export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+
+    # Load Docker for Mac, if installed
+    [ -f "$HOME/.docker/init-zsh.sh" ] && source "$HOME/.docker/init-zsh.sh"
+fi
+
+# Aliases
 alias lua='cd /Users/dbvitor/.config/nvim/lua'
 alias lz='lazygit'
 alias cbr='git branch --sort=-committerdate | fzf --header "Checkout Recent Branch" --preview "git diff {1} --color=always | delta" --pointer="" | xargs git checkout'
@@ -82,37 +115,18 @@ alias tldrf='tldr --list | fzf --preview "tldr {1} --color=always" --preview-win
 
 DEFAULT_USER=$(whoami)
 
-# [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-# Commented out brew-related lines for WSL compatibility
-# source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-# Flutter config
-export PATH="$PATH:`pwd`/flutter/bin"
-
-# Java & Android settings (commented out for WSL if not needed)
-# export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
-# export JAVA_HOME=$(/usr/libexec/java_home -v 17)
-export GITLAB_URL="https://gitlab.fretebras.com.br/"
-export ANDROID_HOME=$HOME/Library/Android/sdk
-export PATH=$PATH:$ANDROID_HOME/emulator
-export PATH=$PATH:$ANDROID_HOME/platform-tools
-
-# NVM setup (commented out brew usage)
-export NVM_DIR=~/.nvm
-# source $(brew --prefix nvm)/nvm.sh
-
-export PYTHON=~/.pyenv/versions/3.10.6/bin/python
-
-# Uncomment the following line if you use GitLab environment variables
- [ -f ~/.gitlab_env ] && source ~/.gitlab_env
-
-# SDKMAN initialization
+# SDKMAN initialization (available on both WSL and MacOS)
 export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+[[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
 
-# Powerlevel10k prompt adjustments
-typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+# Load Powerlevel10k configuration
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# Suppress WSL-specific output that could break instant prompt
+[ -f ~/.gitlab_env ] && source ~/.gitlab_env
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/dbvitor/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/dbvitor/Downloads/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/dbvitor/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/dbvitor/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
