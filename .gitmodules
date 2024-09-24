@@ -30,3 +30,23 @@
 	path = tmux/plugins/vim-tmux-navigator
 	url = https://github.com/christoomey/vim-tmux-navigator
 
+[submodule "tmux/plugins/tmux-fzf"]
+    path = tmux/plugins/tmux-fzf
+    url = https://github.com/sainnhe/tmux-fzf
+
+[submodule "tmux/plugins/tmux-fzf-url"]
+    path = tmux/plugins/tmux-fzf-url
+    url = https://github.com/wfxr/tmux-fzf-url
+
+[submodule "tmux/plugins/tmux-sessionx"]
+    path = tmux/plugins/tmux-sessionx
+    url = https://github.com/omerxx/tmux-sessionx
+
+[submodule "tmux/plugins/tmux-themepack"]
+    path = tmux/plugins/tmux-themepack
+    url = https://github.com/jimeh/tmux-themepack
+
+[submodule "tmux/plugins/tmux-thumbs"]
+    path = tmux/plugins/tmux-thumbs
+    url = https://github.com/fcsonline/tmux-thumbs
+
