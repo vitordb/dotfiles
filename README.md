@@ -1,7 +1,7 @@
 
 # My Dotfiles Repository
 
-This repository contains my environment configurations, including Neovim, Tmux, Zsh, Git, and other essential tools. The following instructions explain how to clone this repository to a new machine and set up the required symlinks to make everything work correctly.
+This repository contains my environment configurations, including Neovim, Tmux, Zsh, Git, and other essential tools. Follow the steps below to clone this repository onto a new machine and set up the required symlinks to make everything work correctly.
 
 ## Installation Steps
 
@@ -22,7 +22,7 @@ git submodule update --init --recursive
 
 ### 2. Create the necessary symlinks
 
-After cloning the repository, you need to create symlinks to apply the configurations to your system. Here are the commands to create the symlinks:
+After cloning the repository, you need to create symlinks to apply the configurations to your system. Run the following commands:
 
 #### Zsh
 
@@ -51,45 +51,71 @@ ln -s ~/.dotfiles/tmux.conf ~/.tmux.conf
 
 ### 3. Install dependencies
 
-Depending on your environment, you may need to install a few dependencies. Below are common commands for Linux and WSL2:
+Depending on your environment (Linux, macOS, or WSL2), you may need to install some dependencies. Here are the common commands for installation:
 
-#### Zsh and Oh-My-Zsh
+#### Homebrew (for macOS or Linux)
 
-Install Zsh and Oh-My-Zsh:
+Install Homebrew if you don't have it yet:
 
 ```bash
-sudo apt update
-sudo apt install zsh
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+#### Install dependencies with Homebrew
+
+```bash
+brew install \
+  git \
+  tmux \
+  neovim \
+  fzf \
+  ripgrep \
+  fd \
+  zsh \
+  zsh-syntax-highlighting \
+  zsh-autosuggestions \
+  starship \
+  markdownlint-cli \
+  gpg
+```
+
+#### Install Nerd Fonts (optional)
+
+To have better terminal icons, install a Nerd Font:
+
+```bash
+brew tap homebrew/cask-fonts
+brew install --cask font-hack-nerd-font
+```
+
+#### Node.js (needed for some Neovim features)
+
+If you use Neovim with support for JavaScript/TypeScript, install Node.js:
+
+```bash
+brew install node
+```
+
+#### Oh-My-Zsh
+
+Install Oh-My-Zsh:
+
+```bash
 sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 ```
 
-#### Git and GPG
+#### GPG and Git LFS
 
-If you're signing commits with GPG, install GPG and `pinentry`:
-
-```bash
-sudo apt install git gpg pinentry-curses
-```
-
-#### Neovim
-
-Install Neovim:
+Install GPG and Git LFS if necessary:
 
 ```bash
-sudo apt install neovim
-```
-
-#### Tmux
-
-Install Tmux:
-
-```bash
-sudo apt install tmux
+brew install gpg git-lfs
+git lfs install
 ```
 
 ### 4. Configure GPG (if necessary)
 
-If you're using GPG to sign commits, ensure that your `gpg-agent` configuration is correct. Add the following line to your `~/.gnupg/gpg-agent.conf` file (adjust the path if needed):
+If you sign commits with GPG, ensure your `gpg-agent` configuration is correct. Add the following line to your `~/.gnupg/gpg-agent.conf` file (adjust the path if necessary):
 
 ```bash
 pinentry-program /usr/bin/pinentry-curses
@@ -104,26 +130,17 @@ gpgconf --launch gpg-agent
 
 ### 5. Install plugins and other tools (optional)
 
-You may need to install some additional tools depending on your workflow. Here are some suggestions:
+You may need to install additional tools depending on your workflow. Here are some suggestions:
 
 - **Lazygit**: If you use Lazygit, install it with:
 
   ```bash
-  sudo add-apt-repository ppa:lazygit-team/release
-  sudo apt update
-  sudo apt install lazygit
-  ```
-
-- **Git LFS**: If you use Git LFS, install it with:
-
-  ```bash
-  sudo apt install git-lfs
-  git lfs install
+  brew install lazygit
   ```
 
 ### 6. Update submodules (if necessary)
 
-To ensure that submodules are always up to date, you can run:
+To ensure submodules are always up to date, you can run:
 
 ```bash
 git submodule update --remote --merge
@@ -133,4 +150,4 @@ git submodule update --remote --merge
 
 By following these instructions, your environment should be correctly set up on a new machine. Remember to adjust the `.gitconfig.personal` file with sensitive information you don’t want to share publicly. Feel free to tweak this setup as needed.
 
----
+
