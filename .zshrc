@@ -1,49 +1,22 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
+# Enable Powerlevel10k instant prompt.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
-
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+# Set name of the theme to load.
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment one of the following lines to change the auto-update behavior
-zstyle ':omz:update' mode auto      # update automatically without asking
-# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
-
-# Uncomment the following line to change how often to auto-update (in days).
+# Configure auto-update behavior
+zstyle ':omz:update' mode auto
 zstyle ':omz:update' frequency 13
 
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to disable marking untracked files under VCS as dirty.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time stamp in history.
+# Set the history timestamp format
 HIST_STAMPS="mm/dd/yyyy"
 
-# Which plugins would you like to load?
+# Plugins
 plugins=(
     git
     zsh-autosuggestions
@@ -58,7 +31,6 @@ plugins=(
     history-substring-search
     node
     npm
-    nvm
     yarn
     volta
     vscode
@@ -66,45 +38,66 @@ plugins=(
     z
 )
 
+# Load Oh My Zsh
 source $ZSH/oh-my-zsh.sh
 
-# Check if running on WSL or MacOS and set environment variables accordingly
+# Detect system and apply specific configurations for WSL, macOS, or Linux
 if grep -qEi "(Microsoft|WSL)" /proc/version &> /dev/null; then
     # WSL-specific settings
+    lazy_load_nvm() {
+        unset -f node npm npx nvm
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    }
 
-    # NVM setup for WSL
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+    for cmd in node npm npx nvm; do
+        eval "$cmd() { lazy_load_nvm; $cmd \"\$@\"; }"
+    done
 
-    # Flutter configuration for WSL
     export PATH="$PATH:$HOME/flutter/bin"
-
-    # Python configuration for WSL
     export PYTHON="$HOME/.pyenv/versions/3.10.6/bin/python"
 
-else
+elif [[ "$OSTYPE" == "darwin"* ]]; then
     # MacOS-specific settings
-
-    # Load Homebrew if installed
-    if command -v brew &> /dev/null; then
+    if [[ -x "$(command -v brew)" ]]; then
         eval "$(/opt/homebrew/bin/brew shellenv)"
     fi
 
-    # NVM setup for Mac
-    export NVM_DIR=~/.nvm
-    [ -s "$(brew --prefix nvm)/nvm.sh" ] && source "$(brew --prefix nvm)/nvm.sh"
+    lazy_load_nvm() {
+        unset -f node npm npx nvm
+        export NVM_DIR=~/.nvm
+        [ -s "$(brew --prefix nvm)/nvm.sh" ] && \. "$(brew --prefix nvm)/nvm.sh"
+    }
 
-    # Flutter configuration for MacOS
-    export PATH="$PATH:`pwd`/flutter/bin"
+    for cmd in node npm npx nvm; do
+        eval "$cmd() { lazy_load_nvm; $cmd \"\$@\"; }"
+    done
 
-    # Java & Android configuration for MacOS
+    export PATH="$PATH:$(pwd)/flutter/bin"
     export ANDROID_HOME=$HOME/Library/Android/sdk
     export PATH=$PATH:$ANDROID_HOME/emulator
     export PATH=$PATH:$ANDROID_HOME/platform-tools
     export JAVA_HOME=$(/usr/libexec/java_home -v 17)
-
-    # Load Docker for Mac, if installed
     [ -f "$HOME/.docker/init-zsh.sh" ] && source "$HOME/.docker/init-zsh.sh"
+
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    # Linux-specific settings
+    if [[ -x "$(command -v brew)" ]]; then
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    fi
+
+    lazy_load_nvm() {
+        unset -f node npm npx nvm
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    }
+
+    for cmd in node npm npx nvm; do
+        eval "$cmd() { lazy_load_nvm; $cmd \"\$@\"; }"
+    done
+
+    export PATH="$PATH:$HOME/flutter/bin"
+    export PYTHON="$HOME/.pyenv/versions/3.10.6/bin/python"
 fi
 
 # Aliases
@@ -113,20 +106,26 @@ alias lz='lazygit'
 alias cbr='git branch --sort=-committerdate | fzf --header "Checkout Recent Branch" --preview "git diff {1} --color=always | delta" --pointer="" | xargs git checkout'
 alias tldrf='tldr --list | fzf --preview "tldr {1} --color=always" --preview-window=right,70% | xargs tldr'
 
+# Set default user for prompt
 DEFAULT_USER=$(whoami)
 
-# SDKMAN initialization (available on both WSL and MacOS)
+# SDKMAN initialization
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
 
 # Load Powerlevel10k configuration
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# Suppress WSL-specific output that could break instant prompt
+# Load GitLab environment settings if available
 [ -f ~/.gitlab_env ] && source ~/.gitlab_env
 
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/dbvitor/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/dbvitor/Downloads/google-cloud-sdk/path.zsh.inc'; fi
+# Google Cloud SDK (macOS specific)
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    if [ -f '/Users/dbvitor/Downloads/google-cloud-sdk/path.zsh.inc' ]; then 
+        . '/Users/dbvitor/Downloads/google-cloud-sdk/path.zsh.inc'
+    fi
+    if [ -f '/Users/dbvitor/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then 
+        . '/Users/dbvitor/Downloads/google-cloud-sdk/completion.zsh.inc'
+    fi
+fi
 
-# The next line enables shell command completion for gcloud.
-if [ -f '/Users/dbvitor/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/dbvitor/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
