@@ -170,5 +170,3 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 - **Neovim**: Configurações organizadas em `.config/nvim`.
 
 ---
-
-Pronto! Agora seu `README.md` está completo e documentado com as dependências e instruções detalhadas. 🚀

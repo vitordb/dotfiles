@@ -50,7 +50,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 else
   # Linux-specific configurations
   if command -v exa &> /dev/null; then
-    alias ls="exa --icons=always"
+    alias ls="exa --icons"
   else
     alias ls="ls --color=auto"
   fi
