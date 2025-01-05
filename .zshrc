@@ -5,9 +5,6 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
-
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
@@ -26,7 +23,6 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Uncomment one of the following lines to change the auto-update behavior
 zstyle ':omz:update' mode auto      # update automatically without asking
-# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
 
 # Uncomment the following line to change how often to auto-update (in days).
 zstyle ':omz:update' frequency 13
@@ -68,77 +64,43 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
-# Check if running on WSL or MacOS and set environment variables accordingly
-if grep -qEi "(Microsoft|WSL)" /proc/version &> /dev/null; then
-    # WSL-specific settings
+# Load NVM
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
 
-    # NVM setup for WSL
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+# Flutter configuration
+export PATH="$PATH:$HOME/flutter/bin"
 
-    # Flutter configuration for WSL
-    export PATH="$PATH:$HOME/flutter/bin"
+# Java & Android configuration
+export ANDROID_HOME=$HOME/Android/Sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
 
-    # Python configuration for WSL
-    export PYTHON="$HOME/.pyenv/versions/3.10.6/bin/python"
-
-else
-    # MacOS-specific settings
-
-    # Load Homebrew if installed
-    if command -v brew &> /dev/null; then
-        eval "$(/opt/homebrew/bin/brew shellenv)"
-    fi
-
-    # NVM setup for Mac
-    export NVM_DIR=~/.nvm
-    [ -s "$(brew --prefix nvm)/nvm.sh" ] && source "$(brew --prefix nvm)/nvm.sh"
-
-    # Flutter configuration for MacOS
-    export PATH="$PATH:`pwd`/flutter/bin"
-
-    # Java & Android configuration for MacOS
-    export ANDROID_HOME=$HOME/Library/Android/sdk
-    export PATH=$PATH:$ANDROID_HOME/emulator
-    export PATH=$PATH:$ANDROID_HOME/platform-tools
-    export JAVA_HOME=$(/usr/libexec/java_home -v 17)
-
-
-    export PATH="/opt/homebrew/opt/python@3.11/bin:$PATH"
-
-    # Load Docker for Mac, if installed
-    [ -f "$HOME/.docker/init-zsh.sh" ] && source "$HOME/.docker/init-zsh.sh"
-fi
+# Docker configuration (if installed)
+[ -f "$HOME/.docker/init-zsh.sh" ] && source "$HOME/.docker/init-zsh.sh"
 
 # Aliases
-alias frete='cd /Users/dbvitor/development/gitlab.com/fretebras'
-alias orun='cd /Users/dbvitor/development/gitlab.com/orun'
-alias lua='cd /Users/dbvitor/.config/nvim/lua'
 alias cbr='git branch --sort=-committerdate | fzf --header "Checkout Recent Branch" --preview "git diff {1} --color=always | delta" --pointer="" | xargs git checkout'
 alias tldrf='tldr --list | fzf --preview "tldr {1} --color=always" --preview-window=right,70% | xargs tldr'
-# ---- Eza (better ls) -----
-
 alias ls="eza --icons=always"
 
 # ---- Zoxide (better cd) ----
 eval "$(zoxide init zsh)"
-
 alias cd="z"
 
-DEFAULT_USER=$(whoami)
-
-# SDKMAN initialization (available on both WSL and MacOS)
+# SDKMAN initialization
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
 
 # Load Powerlevel10k configuration
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# Suppress WSL-specific output that could break instant prompt
+# Suppress output that could break instant prompt
 [ -f ~/.gitlab_env ] && source ~/.gitlab_env
 source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
 
-# history setup
+# History setup
 HISTFILE=$HOME/.zhistory
 SAVEHIST=1000
 HISTSIZE=999
@@ -147,8 +109,6 @@ setopt hist_expire_dups_first
 setopt hist_ignore_dups
 setopt hist_verify
 
-# completion using arrow keys (based on history)
+# Completion using arrow keys (based on history)
 bindkey '^[[A' history-search-backward
 bindkey '^[[B' history-search-forward
-# source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-#
