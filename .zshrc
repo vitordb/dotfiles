@@ -1,45 +1,15 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
+# Enable Powerlevel10k instant prompt
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# Path to your oh-my-zsh installation.
+# Path to your oh-my-zsh installation
 export ZSH="$HOME/.oh-my-zsh"
 
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+# Set name of the theme to load
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment one of the following lines to change the auto-update behavior
-zstyle ':omz:update' mode auto      # update automatically without asking
-
-# Uncomment the following line to change how often to auto-update (in days).
-zstyle ':omz:update' frequency 13
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to disable marking untracked files under VCS as dirty.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time stamp in history.
-HIST_STAMPS="mm/dd/yyyy"
-
-# Which plugins would you like to load?
+# Plugins
 plugins=(
     git
     zsh-autosuggestions
@@ -59,10 +29,32 @@ plugins=(
     volta
     vscode
     sudo
-    z
 )
 
 source $ZSH/oh-my-zsh.sh
+
+# System-specific settings
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  # macOS-specific configurations
+  export PATH="/opt/homebrew/bin:$PATH"
+  source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
+  alias ls="eza --icons=always"
+
+  # Zoxide initialization for macOS
+  if command -v zoxide &> /dev/null; then
+    eval "$(zoxide init zsh)"
+    alias cd="z"
+  else
+    echo "Zoxide not found. Please install it to enable 'z' functionality."
+  fi
+else
+  # Linux-specific configurations
+  if command -v exa &> /dev/null; then
+    alias ls="exa --icons=always"
+  else
+    alias ls="ls --color=auto"
+  fi
+fi
 
 # Load NVM
 export NVM_DIR="$HOME/.nvm"
@@ -83,11 +75,6 @@ export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
 # Aliases
 alias cbr='git branch --sort=-committerdate | fzf --header "Checkout Recent Branch" --preview "git diff {1} --color=always | delta" --pointer="" | xargs git checkout'
 alias tldrf='tldr --list | fzf --preview "tldr {1} --color=always" --preview-window=right,70% | xargs tldr'
-alias ls="eza --icons=always"
-
-# ---- Zoxide (better cd) ----
-eval "$(zoxide init zsh)"
-alias cd="z"
 
 # SDKMAN initialization
 export SDKMAN_DIR="$HOME/.sdkman"
@@ -98,7 +85,6 @@ export SDKMAN_DIR="$HOME/.sdkman"
 
 # Suppress output that could break instant prompt
 [ -f ~/.gitlab_env ] && source ~/.gitlab_env
-source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
 
 # History setup
 HISTFILE=$HOME/.zhistory
