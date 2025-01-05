@@ -58,7 +58,31 @@ ln -sf ~/.dotfiles/.config/nvim ~/.config/nvim
 
 ---
 
-### 3. Aproveite as Configurações
+### 3. Configurar o Tmux Plugin Manager (TPM)
+
+O **TPM** é necessário para gerenciar os plugins do Tmux configurados no arquivo `.tmux.conf`.
+
+#### Instalar o TPM:
+
+```bash
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+```
+
+#### Instalar os plugins configurados:
+
+1. Abra o Tmux:
+   ```bash
+   tmux
+   ```
+2. Dentro de uma sessão do Tmux, pressione:
+   ```text
+   Prefixo (Ctrl-a) + I
+   ```
+   Isso instalará todos os plugins listados no arquivo `.tmux.conf`.
+
+---
+
+### 4. Aproveite as Configurações
 
 Após rodar o script ou criar os symlinks manualmente, as configurações do **Zsh**, **WezTerm**, **Neovim** e **Tmux** estarão prontas para uso!
 
@@ -76,73 +100,13 @@ Para garantir o funcionamento correto das configurações, instale as seguintes 
 4. **[Neovim](https://neovim.io/)**: Editor de texto avançado.
 5. **[WezTerm](https://wezfurlong.org/wezterm/)**: Terminal configurável.
 6. **[Tmux](https://github.com/tmux/tmux)**: Multiplexador de terminais.
-7. **[Node Version Manager (NVM)](https://github.com/nvm-sh/nvm)**: Gerenciador de versões do Node.js.
-8. **[Eza](https://github.com/eza-community/eza)**: Substituto moderno para o comando `ls`.
-9. **[Zoxide](https://github.com/ajeetdsouza/zoxide)**: Ferramenta para navegação inteligente entre diretórios.
-10. **[Fzf](https://github.com/junegunn/fzf)**: Ferramenta para fuzzy finding.
-11. **[SDKMAN](https://sdkman.io/)**: Gerenciador de versões para ferramentas como Java e Gradle.
-
-### Instalação das Dependências
-
-#### macOS
-
-```bash
-# Instalar Homebrew, caso ainda não tenha
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-# Instalar dependências
-brew install zsh neovim tmux node eza zoxide fzf
-brew install --cask wezterm
-brew install --cask font-meslo-lg-nerd-font
-brew install --cask java
-```
-
-#### Linux (Ubuntu 22.04+)
-
-```bash
-# Atualizar repositórios
-sudo apt update && sudo apt upgrade -y
-
-# Instalar dependências
-sudo apt install -y zsh neovim tmux nodejs unzip fzf fonts-powerline
-
-# Instalar Eza
-sudo apt install -y eza
-
-# Instalar Zoxide
-curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
-
-# Instalar WezTerm
-sudo apt install -y software-properties-common
-sudo add-apt-repository -y ppa:wez/wezterm
-sudo apt update
-sudo apt install -y wezterm
-
-# Instalar SDKMAN
-curl -s "https://get.sdkman.io" | bash
-```
-
-#### Configuração do Powerlevel10k
-
-```bash
-# Instalar Powerlevel10k
-git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
-
-# Configurar Powerlevel10k como tema no .zshrc
-ZSH_THEME="powerlevel10k/powerlevel10k"
-```
-
----
-
-## Adicionando ou Alterando Arquivos
-
-1. Faça as alterações diretamente nos arquivos no diretório `~/.dotfiles` ou nos symlinks.
-2. Adicione e faça commit das alterações:
-   ```bash
-   git add .
-   git commit -m "Atualizando configurações do dotfiles"
-   git push
-   ```
+7. **[TPM (Tmux Plugin Manager)](https://github.com/tmux-plugins/tpm)**: Gerenciador de plugins para Tmux.
+8. **[Node Version Manager (NVM)](https://github.com/nvm-sh/nvm)**: Gerenciador de versões do Node.js.
+9. **[Eza](https://github.com/eza-community/eza)**: Substituto moderno para o comando `ls`.
+10. **[Zoxide](https://github.com/ajeetdsouza/zoxide)**: Ferramenta para navegação inteligente entre diretórios.
+11. **[Fzf](https://github.com/junegunn/fzf)**: Ferramenta para fuzzy finding.
+12. **[SDKMAN](https://sdkman.io/)**: Gerenciador de versões para ferramentas como Java e Gradle.
+13. **[Lazygit](https://github.com/jesseduffield/lazygit)**: Interface para Git.
 
 ---
 
@@ -155,10 +119,13 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
    ```
 
 2. Execute o script `setup.sh` para criar os symlinks:
+
    ```bash
    cd ~/.dotfiles
    ./setup.sh
    ```
+
+3. Configure o **TPM** e instale os plugins como mostrado acima.
 
 ---
 
@@ -166,7 +133,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 
 - **Zsh**: `.zshrc` com alias e configurações personalizadas.
 - **WezTerm**: `.wezterm.lua` para terminal customizado.
-- **Tmux**: `.tmux.conf` com atalhos e configurações específicas.
+- **Tmux**: `.tmux.conf` com atalhos, temas e plugins configurados.
 - **Neovim**: Configurações organizadas em `.config/nvim`.
 
 ---
