@@ -97,6 +97,21 @@ return {
 					end,
 				})
 			end,
+			["yaml"] = function()
+				lspconfig.yamlls.setup({
+					capabilities = capabilities,
+					settings = {
+						yaml = {
+							schemas = {
+								["https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.24.0-standalone-strict/all.json"] = "*.k8s.yaml",
+							},
+							validate = true,
+							hover = true,
+							completion = true,
+						},
+					},
+				})
+			end,
 			["graphql"] = function()
 				lspconfig["graphql"].setup({
 					capabilities = capabilities,
