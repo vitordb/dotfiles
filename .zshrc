@@ -98,3 +98,4 @@ setopt hist_verify
 # Completion using arrow keys (based on history)
 bindkey '^[[A' history-search-backward
 bindkey '^[[B' history-search-forward
+source <(kubectl completion zsh)
