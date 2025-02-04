@@ -75,6 +75,7 @@ export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
 # Aliases
 alias cbr='git branch --sort=-committerdate | fzf --header "Checkout Recent Branch" --preview "git diff {1} --color=always | delta" --pointer="" | xargs git checkout'
 alias tldrf='tldr --list | fzf --preview "tldr {1} --color=always" --preview-window=right,70% | xargs tldr'
+alias k='kubectl'
 
 # SDKMAN initialization
 export SDKMAN_DIR="$HOME/.sdkman"
