@@ -64,9 +64,11 @@ export NVM_DIR="$HOME/.nvm"
 export PATH="$PATH:$HOME/flutter/bin"
 
 # Java & Android configuration
-export ANDROID_HOME=$HOME/Android/Sdk
+export ANDROID_HOME=$HOME/Library/Android/sdk
 export PATH=$PATH:$ANDROID_HOME/emulator
 export PATH=$PATH:$ANDROID_HOME/platform-tools
+export PATH=$PATH:$ANDROID_HOME/tools
+export PATH=$PATH:$ANDROID_HOME/tools/bin
 export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
 
 # Docker configuration (if installed)
@@ -76,6 +78,7 @@ export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
 alias cbr='git branch --sort=-committerdate | fzf --header "Checkout Recent Branch" --preview "git diff {1} --color=always | delta" --pointer="" | xargs git checkout'
 alias tldrf='tldr --list | fzf --preview "tldr {1} --color=always" --preview-window=right,70% | xargs tldr'
 alias k='kubectl'
+alias air='~/.air'
 
 # SDKMAN initialization
 export SDKMAN_DIR="$HOME/.sdkman"
@@ -100,3 +103,14 @@ setopt hist_verify
 bindkey '^[[A' history-search-backward
 bindkey '^[[B' history-search-forward
 source <(kubectl completion zsh)
+
+
+# Load Angular CLI autocompletion.
+source <(ng completion script)
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+
+export PATH=$PATH:$(go env GOPATH)/bin

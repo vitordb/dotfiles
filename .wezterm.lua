@@ -30,4 +30,3 @@ config.macos_window_background_blur = 10
 
 -- and finally, return the configuration to wezterm
 return config
-

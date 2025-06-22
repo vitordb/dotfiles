@@ -1,6 +1,6 @@
 # Meus Dotfiles
 
-Este repositório contém meus arquivos de configuração, como **Zsh**, **WezTerm**, **Neovim** e **Tmux**.
+Este repositório contém minhas configurações pessoais de desenvolvimento, otimizadas para um fluxo de trabalho rápido e eficiente. A base principal é o **Neovim** com a distribuição **NvChad**, mas também inclui configurações para **Zsh**, **Tmux**, e outras ferramentas.
 
 ---
 
@@ -8,83 +8,62 @@ Este repositório contém meus arquivos de configuração, como **Zsh**, **WezTe
 
 ```plaintext
 ~/.dotfiles/
-├── .config/
-│   └── nvim/        # Apenas configurações específicas do Neovim
-├── .wezterm.lua     # Configuração do WezTerm
-├── .zshrc           # Configuração do Zsh
-├── .tmux.conf       # Configuração do Tmux
-├── setup.sh         # Script para recriar os symlinks
-└── README.md        # Instruções de uso
+├── my-nvchad-config/  # Configuração principal do Neovim (NvChad)
+│   ├── init.lua
+│   └── lua/
+│       ├── plugins.lua
+│       └── ...
+├── .zshrc             # (Exemplo) Configuração do Zsh
+├── .tmux.conf         # (Exemplo) Configuração do Tmux
+└── install.sh         # Script para criar todos os symlinks
 ```
 
 ---
 
-## Como Usar
+## Instalação Rápida
 
-### 1. Clonar o Repositório
+Para configurar um novo ambiente em qualquer máquina (Linux ou macOS), siga os passos abaixo.
 
-Clone o repositório para o diretório `~/.dotfiles`:
+### 1. Pré-requisitos
+
+Certifique-se de que você tem os seguintes programas instalados:
+- `git`
+- `nvim` (Neovim 0.9.0 ou superior)
+- `make` (para compilar alguns plugins)
+- (Opcional) Uma [Nerd Font](https://www.nerdfonts.com/) para os ícones.
+
+### 2. Clonar o Repositório
+
+Clone este repositório para o local de sua preferência. A convenção é usar `~/.dotfiles`.
 
 ```bash
-git clone https://github.com/seu-usuario/dotfiles.git ~/.dotfiles
+git clone https://github.com/vitordb/dotfiles.git ~/.dotfiles
 ```
 
----
+### 3. Executar o Script de Instalação
 
-### 2. Criar os Symlinks
-
-Execute o script `setup.sh` para criar os symlinks automaticamente:
+O script `install.sh` criará todos os links simbólicos necessários para as suas configurações.
 
 ```bash
 cd ~/.dotfiles
-./setup.sh
+./install.sh
 ```
 
-Se preferir criar os symlinks manualmente, use os comandos abaixo:
+Isso irá, principalmente, criar um link simbólico de `~/.config/nvim` para o diretório `my-nvchad-config` deste repositório.
+
+### 4. Iniciar o Neovim
+
+Abra o Neovim. O `lazy.nvim` irá automaticamente começar a instalar todos os plugins definidos.
 
 ```bash
-# Symlink para o Zsh
-ln -sf ~/.dotfiles/.zshrc ~/.zshrc
-
-# Symlink para o WezTerm
-ln -sf ~/.dotfiles/.wezterm.lua ~/.wezterm.lua
-
-# Symlink para o Tmux
-ln -sf ~/.dotfiles/.tmux.conf ~/.tmux.conf
-
-# Symlink para a configuração do Neovim
-ln -sf ~/.dotfiles/.config/nvim ~/.config/nvim
+nvim
 ```
+
+Aguarde a conclusão do processo. Pode ser necessário reiniciar o Neovim uma vez após a instalação.
 
 ---
 
-### 3. Configurar o Tmux Plugin Manager (TPM)
-
-O **TPM** é necessário para gerenciar os plugins do Tmux configurados no arquivo `.tmux.conf`.
-
-#### Instalar o TPM:
-
-```bash
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-```
-
-#### Instalar os plugins configurados:
-
-1. Abra o Tmux:
-   ```bash
-   tmux
-   ```
-2. Dentro de uma sessão do Tmux, pressione:
-   ```text
-   Prefixo (Ctrl-a) + I
-   ```
-   Isso instalará todos os plugins listados no arquivo `.tmux.conf`.
-
----
-
-### 4. Aproveite as Configurações
-
-Após rodar o script ou criar os symlinks manualmente, as configurações do **Zsh**, **WezTerm**, **Neovim** e **Tmux** estarão prontas para uso!
+E é isso! Seu ambiente está pronto para usar.
 
 ---
 
