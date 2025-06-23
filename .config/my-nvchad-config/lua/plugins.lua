@@ -25,65 +25,16 @@ return {
   { import = "nvchad.blink.lazyspec" },
   {
     "saghen/blink.cmp",
-    dependencies = {
-      "Kaiser-Yang/blink-cmp-avante",
-      "L3MON4D3/LuaSnip",
-    },
     opts = function(_, opts)
-      -- Desabilita o autocompletar em buffers que não são de edição
-      opts.enabled = function()
-        -- Verifica o tipo de buffer. Desativa para prompts, terminais e buffers "sem arquivo".
-        local buftype = vim.bo.buftype
-        if buftype == "prompt" or buftype == "terminal" or buftype == "nofile" then
-          return false
-        end
-
-        -- Mantém a verificação de filetype como uma proteção extra
-        local disable_in_filetypes = {
-          ["neo-tree"] = true,
-          ["TelescopePrompt"] = true,
-          ["lazy"] = true,
-          ["mason"] = true,
-          ["checkhealth"] = true,
-          ["help"] = true,
-        }
-        if disable_in_filetypes[vim.bo.filetype] then
-          return false
-        end
-
-        return true
+      -- Desabilitar a documentação automática é a chave para evitar o erro.
+      -- Isso deve corrigir a instabilidade.
+      if opts.completion and opts.completion.documentation then
+        opts.completion.documentation.auto_show = false
       end
 
-      -- Configuração das fontes, com a correção para o Luasnip
-      opts.sources = {
-        default = { "avante", "lsp", "snippets", "buffer", "path" },
-        providers = {
-          avante = {
-            module = "blink-cmp-avante",
-            name = "Avante",
-            opts = {
-              -- opções para o blink-cmp-avante, se necessário
-            },
-          },
-        },
-      }
-
-      -- Nova configuração para o preset de snippets, conforme a mensagem de erro
-      opts.snippets = {
-        preset = "luasnip",
-      }
-
-      -- Mantém seus keymaps personalizados
-      opts.keymap = {
-        preset = "none",
-        ["<C-j>"]     = { "select_next",  "fallback" },
-        ["<C-k>"]     = { "select_prev",  "fallback" },
-        ["<C-b>"]     = { "scroll_documentation_up",   "fallback" },
-        ["<C-f>"]     = { "scroll_documentation_down", "fallback" },
-        ["<C-Space>"] = { "show" },
-        ["<C-e>"]     = { "hide", "fallback" },
-        ["<CR>"]      = { "select_and_accept", "fallback" },
-      }
+      -- Não vamos mais substituir os keymaps, vamos usar o padrão do NvChad
+      -- que deve funcionar agora que o erro principal foi corrigido.
+      return opts
     end,
   },
   {
