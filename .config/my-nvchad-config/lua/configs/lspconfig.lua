@@ -1,5 +1,5 @@
 require("nvchad.configs.lspconfig").defaults()
-local servers = { "html", "cssls" }
+local servers = { "html", "cssls", "gopls" }
 
 -- Configuração específica para o tsserver (ts_ls)
 local lspconfig = require("lspconfig")
