@@ -122,9 +122,9 @@ return {
       popupmenu = { enabled = false },
       lsp = {
         message = { enabled = true, view = "notify" },
-        progress = { enabled = false },
+        progress = { enabled = true, view = "mini" },
         override = {},
-        hover = { enabled = false },
+        hover = { enabled = true },
         signature = { enabled = false },
         documentation = { view = "hover", opts = {} }
       },
