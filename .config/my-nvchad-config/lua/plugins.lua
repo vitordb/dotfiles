@@ -32,6 +32,10 @@ return {
       },
       sources = { default = { "lsp", "snippets" } },
       snippets = { preset = "luasnip" },
+      signature = {
+        enabled = true,
+        window = { show_documentation = false },
+      },
     },
     config = function(_, opts)
       require("blink.cmp").setup(opts)
