@@ -118,7 +118,7 @@ return {
           input = { view = "cmdline_input", icon = " " },
         },
       },
-      messages = { enabled = false },
+      messages = { enabled = true, view = "notify" },
       popupmenu = { enabled = false },
       lsp = { progress = { enabled = false }, override = {}, hover = { enabled = false }, signature = { enabled = false }, message = { enabled = false }, documentation = { view = "hover", opts = {} } },
       presets = {},
