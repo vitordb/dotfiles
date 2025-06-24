@@ -120,7 +120,14 @@ return {
       },
       messages = { enabled = true, view = "notify" },
       popupmenu = { enabled = false },
-      lsp = { progress = { enabled = false }, override = {}, hover = { enabled = false }, signature = { enabled = false }, message = { enabled = false }, documentation = { view = "hover", opts = {} } },
+      lsp = {
+        message = { enabled = true, view = "notify" },
+        progress = { enabled = false },
+        override = {},
+        hover = { enabled = false },
+        signature = { enabled = false },
+        documentation = { view = "hover", opts = {} }
+      },
       presets = {},
     },
     dependencies = {
