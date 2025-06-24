@@ -26,19 +26,36 @@ return {
     opts = {
       completion = { documentation = { auto_show = false } },
       keymap = {
-        preset = "none",
-        ["<CR>"] = { "select_and_accept", "fallback" },
+        preset = "super-tab",
         ["<C-j>"] = { "select_next", "fallback" },
         ["<C-k>"] = { "select_prev", "fallback" },
-        ["<Up>"] = { "select_prev", "fallback" },
-        ["<Down>"] = { "select_next", "fallback" },
-        ["<C-Space>"] = { "show" },
       },
       sources = { default = { "lsp", "snippets" } },
       snippets = { preset = "luasnip" },
     },
     config = function(_, opts)
       require("blink.cmp").setup(opts)
+      
+      -- Mapeamentos globais que funcionam com blink.cmp
+      local blink = require("blink.cmp")
+      
+      vim.keymap.set("i", "<C-j>", function()
+        if blink.is_visible() then
+          blink.select_next()
+          return ""
+        else
+          return "<C-n>"
+        end
+      end, { expr = true, desc = "Next completion item" })
+      
+      vim.keymap.set("i", "<C-k>", function()
+        if blink.is_visible() then
+          blink.select_prev()
+          return ""
+        else
+          return "<C-p>"
+        end
+      end, { expr = true, desc = "Previous completion item" })
     end,
   },
 
