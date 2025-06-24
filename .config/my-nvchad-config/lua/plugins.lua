@@ -40,7 +40,7 @@ return {
       local blink = require("blink.cmp")
       
       vim.keymap.set("i", "<C-j>", function()
-        if blink.is_visible() then
+        if vim.bo.modifiable and blink.is_visible() then
           blink.select_next()
           return ""
         else
@@ -49,7 +49,7 @@ return {
       end, { expr = true, desc = "Next completion item" })
       
       vim.keymap.set("i", "<C-k>", function()
-        if blink.is_visible() then
+        if vim.bo.modifiable and blink.is_visible() then
           blink.select_prev()
           return ""
         else
@@ -98,47 +98,36 @@ return {
     end,
   },
 
-  --[[ -- PLUGINS DE IA DESATIVADOS TEMPORARIAMENTE PARA RESOLVER CONFLITO
-  {
-    "zbirenbaum/copilot.lua",
-    cmd = "Copilot",
-    event = "InsertEnter",
-    opts = {
-      suggestion = { enabled = false },
-      panel = { enabled = false },
-      filetypes = { ["*"] = false },
-    },
-  },
-  {
-    "yetone/avante.nvim",
-    build = "make",
-    event = "VeryLazy",
-    dependencies = {
-      "zbirenbaum/copilot.lua",
-      "nvim-lua/plenary.nvim",
-      "MunifTanjim/nui.nvim",
-      "nvim-telescope/telescope.nvim",
-      "nvim-treesitter/nvim-treesitter",
-      "nvim-tree/nvim-web-devicons",
-      "stevearc/dressing.nvim",
-    },
-    opts = {
-      provider = "copilot",
-    },
-    config = function(_, opts)
-        require("avante").setup(opts)
-    end,
-  },
+  -- PLUGINS DE IA - TESTANDO NOICE.NVIM
   {
     "folke/noice.nvim",
     event = "VeryLazy",
-    opts = {},
+    opts = {
+      -- Ativar apenas o cmdline customizado
+      cmdline = {
+        enabled = true,
+        view = "cmdline_popup",
+        opts = {},
+        format = {
+          cmdline = { pattern = "^:", icon = " ", lang = "vim" },
+          search_down = { kind = "search", pattern = "^/", icon = "  ", lang = "regex" },
+          search_up = { kind = "search", pattern = "^%?", icon = "  ", lang = "regex" },
+          filter = { pattern = "^:%s*!", icon = "$", lang = "bash" },
+          lua = { pattern = { "^:%s*lua%s+", "^:%s*lua%s*=%s*", "^:%s*=%s*" }, icon = "", lang = "lua" },
+          help = { pattern = "^:%s*he?l?p?%s+", icon = "" },
+          input = { view = "cmdline_input", icon = " " },
+        },
+      },
+      messages = { enabled = false },
+      popupmenu = { enabled = false },
+      lsp = { progress = { enabled = false }, override = {}, hover = { enabled = false }, signature = { enabled = false }, message = { enabled = false }, documentation = { view = "hover", opts = {} } },
+      presets = {},
+    },
     dependencies = {
       "MunifTanjim/nui.nvim",
       "rcarriga/nvim-notify",
     },
   },
-  --]]
 
   -- Go.nvim COM A CONFIGURAÇÃO CORRETA E DEFINITIVA
   {
