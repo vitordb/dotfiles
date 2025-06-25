@@ -149,10 +149,19 @@ return {
     build = ':lua require("go.install").update_all_sync()',
     config = function()
       require("go").setup({
-        lsp_cfg = false,
+        lsp_cfg = true,
         lsp_gofumpt = true,
         disable_default_keymaps = true,
         lsp_keymaps = false,
+        hints = {
+          assignVariableTypes = true,
+          compositeLiteralFields = true,
+          compositeLiteralTypes = true,
+          constantValues = true,
+          functionTypeParameters = true,
+          parameterNames = true,
+          rangeVariableTypes = true,
+        },
       })
       local format_sync_grp = vim.api.nvim_create_augroup("GoFormat", { clear = true })
       vim.api.nvim_create_autocmd("BufWritePre", {
@@ -164,4 +173,11 @@ return {
       })
     end,
   },
+
+  -- {
+  --   "xiyaowong/transparent.nvim",
+  --   lazy = false,
+  --   priority = 1000,
+  --   opts = require "configs.transparent",
+  -- },
 }
