@@ -180,4 +180,80 @@ return {
   --   priority = 1000,
   --   opts = require "configs.transparent",
   -- },
+
+  {
+    "rcarriga/nvim-notify",
+    config = function()
+      require("notify").setup({
+        max_width = 80,
+        max_height = 10,
+        stages = "fade",
+        timeout = 3000,
+      })
+    end,
+  },
+
+  {
+    "yetone/avante.nvim",
+    build = "make",
+    event = "VeryLazy",
+    dependencies = {
+      "zbirenbaum/copilot.lua",
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+      "nvim-telescope/telescope.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-tree/nvim-web-devicons",
+      "stevearc/dressing.nvim",
+      {
+        "folke/snacks.nvim",
+        lazy = false,
+        priority = 1000,
+        config = function()
+          require("snacks").setup()
+        end,
+      },
+      {
+        "MeanderingProgrammer/render-markdown.nvim",
+        opts = {
+          file_types = { "markdown", "Avante" },
+          latex = { enabled = false },
+        },
+        ft = { "markdown", "Avante" },
+      },
+      {
+        "HakonHarnes/img-clip.nvim",
+        event = "VeryLazy",
+        opts = {
+          default = {
+            embed_image_as_base64 = false,
+            prompt_for_file_name = false,
+            drag_and_drop = {
+              insert_mode = true,
+            },
+            use_absolute_path = true,
+          },
+        },
+      },
+    },
+    opts = {
+      provider = "copilot",
+      providers = {
+        copilot = {},
+      },
+    },
+    config = function(_, opts)
+      require("avante").setup(opts)
+      require("copilot").setup({
+        suggestion = {
+          enabled = true,
+          auto_trigger = true,
+          keymap = {
+            accept = "<C-l>",
+          },
+        },
+        panel = { enabled = false },
+      })
+    end,
+  },
 }
