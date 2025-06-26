@@ -62,10 +62,48 @@ map("n", "<leader>nf", "<C-w>p", { desc = "Noice: Focar na notificação/flutuan
 map("n", "<leader>n_", "<C-w>_", { desc = "Noice: Maximizar altura da notificação" })
 map("n", "<leader>n|", "<C-w>|", { desc = "Noice: Maximizar largura da notificação" })
 
--- Comando customizado para rodar GoTest -f no diretório do arquivo atual
+-- Custom command to run Go tests in the current file's directory (Noice notification style)
 map("n", "<leader>gf", function()
   local file = vim.api.nvim_buf_get_name(0)
   local dir = vim.fn.fnamemodify(file, ":h")
-  local cmd = string.format('cd %s && go test -v %s', dir, vim.fn.fnamemodify(file, ':t'))
-  vim.cmd('split | terminal ' .. cmd)
-end, { desc = "Go: Rodar teste do arquivo atual no diretório correto" })
+  local cmd = string.format("cd %s && go test -v 2>&1", dir)
+  vim.fn.jobstart(cmd, {
+    stdout_buffered = true,
+    on_stdout = function(_, data)
+      if data and #data > 0 then
+        vim.notify(table.concat(data, "\n"), vim.log.levels.INFO, { title = "Go Test Result" })
+      end
+    end,
+    on_stderr = function(_, data)
+      if data and #data > 0 then
+        local msg = table.concat(data, "\n")
+        if msg:match("%S") then
+          vim.notify(msg, vim.log.levels.ERROR, { title = "Go Test Error" })
+        end
+      end
+    end,
+  })
+end, { desc = "Go: Run package tests in current file's directory (Noice notification)" })
+
+-- Custom command to run Go tests with coverage in the current file's directory (Noice notification style)
+map("n", "<leader>gC", function()
+  local file = vim.api.nvim_buf_get_name(0)
+  local dir = vim.fn.fnamemodify(file, ":h")
+  local cmd = string.format("cd %s && go test -cover -v 2>&1", dir)
+  vim.fn.jobstart(cmd, {
+    stdout_buffered = true,
+    on_stdout = function(_, data)
+      if data and #data > 0 then
+        vim.notify(table.concat(data, "\n"), vim.log.levels.INFO, { title = "Go Coverage Result" })
+      end
+    end,
+    on_stderr = function(_, data)
+      if data and #data > 0 then
+        local msg = table.concat(data, "\n")
+        if msg:match("%S") then
+          vim.notify(msg, vim.log.levels.ERROR, { title = "Go Coverage Error" })
+        end
+      end
+    end,
+  })
+end, { desc = "Go: Run package tests with coverage in current file's directory (Noice notification)" })

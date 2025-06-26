@@ -256,4 +256,15 @@ return {
       })
     end,
   },
+
+  {
+    "folke/which-key.nvim",
+    lazy = false,
+    config = function()
+      require("which-key").setup({})
+      vim.api.nvim_create_user_command("ReloadWhichKey", function()
+        require("which-key").setup({})
+      end, {})
+    end,
+  },
 }
