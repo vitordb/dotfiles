@@ -1,6 +1,6 @@
 # Meus Dotfiles
 
-Este repositório contém minhas configurações pessoais de desenvolvimento, otimizadas para um fluxo de trabalho rápido e eficiente. A base principal é o **Neovim** com a distribuição **NvChad**, mas também inclui configurações para **Zsh**, **Tmux**, e outras ferramentas.
+Este repositório contém minhas configurações pessoais de desenvolvimento, otimizadas para um fluxo de trabalho rápido e eficiente. A base principal é o **Neovim** com a distribuição **NvChad**, mas também inclui configurações para **Zsh**, **Tmux**, **WezTerm** e outras ferramentas.
 
 ---
 
@@ -8,14 +8,17 @@ Este repositório contém minhas configurações pessoais de desenvolvimento, ot
 
 ```plaintext
 ~/.dotfiles/
-├── my-nvchad-config/  # Configuração principal do Neovim (NvChad)
-│   ├── init.lua
-│   └── lua/
-│       ├── plugins.lua
-│       └── ...
-├── .zshrc             # (Exemplo) Configuração do Zsh
-├── .tmux.conf         # (Exemplo) Configuração do Tmux
-└── install.sh         # Script para criar todos os symlinks
+├── .config/
+│   └── my-nvchad-config/  # Configuração principal do Neovim (NvChad)
+│       ├── init.lua
+│       └── lua/
+│           ├── plugins.lua
+│           └── ...
+├── .zshrc             # Configuração do Zsh
+├── .tmux.conf         # Configuração do Tmux
+├── .wezterm.lua       # Configuração do WezTerm
+├── install.sh         # Script para criar todos os symlinks
+└── ...
 ```
 
 ---
@@ -37,19 +40,25 @@ Certifique-se de que você tem os seguintes programas instalados:
 Clone este repositório para o local de sua preferência. A convenção é usar `~/.dotfiles`.
 
 ```bash
-git clone https://github.com/vitordb/dotfiles.git ~/.dotfiles
+git clone https://github.com/seu-usuario/dotfiles.git ~/.dotfiles
 ```
 
 ### 3. Executar o Script de Instalação
 
-O script `install.sh` criará todos os links simbólicos necessários para as suas configurações.
+O script `install.sh` criará todos os links simbólicos necessários para as suas configurações, incluindo o Neovim.
 
 ```bash
 cd ~/.dotfiles
 ./install.sh
 ```
 
-Isso irá, principalmente, criar um link simbólico de `~/.config/nvim` para o diretório `my-nvchad-config` deste repositório.
+O script irá:
+- Remover qualquer configuração existente em `~/.config/nvim`.
+- Criar um link simbólico de `~/.config/nvim` para o diretório `my-nvchad-config` deste repositório:
+
+```bash
+ln -sf ~/.dotfiles/.config/my-nvchad-config ~/.config/nvim
+```
 
 ### 4. Iniciar o Neovim
 
@@ -70,8 +79,6 @@ E é isso! Seu ambiente está pronto para usar.
 ## Dependências
 
 Para garantir o funcionamento correto das configurações, instale as seguintes ferramentas:
-
-### Ferramentas Necessárias
 
 1. **[Zsh](https://www.zsh.org/)**: Shell principal.
 2. **[Oh My Zsh](https://ohmyz.sh/)**: Framework para gerenciar configurações do Zsh.
@@ -97,11 +104,11 @@ Para garantir o funcionamento correto das configurações, instale as seguintes 
    git clone https://github.com/seu-usuario/dotfiles.git ~/.dotfiles
    ```
 
-2. Execute o script `setup.sh` para criar os symlinks:
+2. Execute o script `install.sh` para criar os symlinks:
 
    ```bash
    cd ~/.dotfiles
-   ./setup.sh
+   ./install.sh
    ```
 
 3. Configure o **TPM** e instale os plugins como mostrado acima.
@@ -113,6 +120,16 @@ Para garantir o funcionamento correto das configurações, instale as seguintes 
 - **Zsh**: `.zshrc` com alias e configurações personalizadas.
 - **WezTerm**: `.wezterm.lua` para terminal customizado.
 - **Tmux**: `.tmux.conf` com atalhos, temas e plugins configurados.
-- **Neovim**: Configurações organizadas em `.config/nvim`.
+- **Neovim**: Configurações organizadas em `.config/nvim` (linkadas para `my-nvchad-config`).
 
 ---
+
+**This repo is supposed to be used as config by NvChad users!**
+
+- O repositório principal do NvChad (NvChad/NvChad) é usado como plugin por este repo.
+- Você importa os módulos normalmente, como `require "nvchad.options"`, `require "nvchad.mappings"`.
+- Você pode deletar o `.git` deste repo (ao clonar localmente) ou fazer um fork :)
+
+# Credits
+
+1) Lazyvim starter https://github.com/LazyVim/starter como inspiração para o starter do NvChad.
