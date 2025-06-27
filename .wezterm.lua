@@ -22,8 +22,8 @@ config.color_scheme = 'Vacuous 2 (terminal.sexy)'
 -- 	brights = { "#214969", "#E52E2E", "#44FFB1", "#FFE073", "#A277FF", "#a277ff", "#24EAF7", "#24EAF7" },
 -- }
 
-config.font = wezterm.font("JetBrainsMono Nerd Font Mono")
-config.font_size = 19
+config.font = wezterm.font("JetBrainsMono Nerd Font Mono", {weight="Regular", stretch="Normal", style="Normal"})
+config.font_size = 15
 
 config.enable_tab_bar = false
 

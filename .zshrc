@@ -44,8 +44,6 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   if command -v zoxide &> /dev/null; then
     eval "$(zoxide init zsh)"
     alias cd="z"
-  else
-    echo "Zoxide not found. Please install it to enable 'z' functionality."
   fi
 else
   # Linux-specific configurations
@@ -59,6 +57,9 @@ fi
 # Load NVM
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+
+# Ensure NVM uses default version
+[ -s "$NVM_DIR/nvm.sh" ] && nvm use default >/dev/null 2>&1
 
 # Flutter configuration
 export PATH="$PATH:$HOME/flutter/bin"
@@ -75,7 +76,7 @@ export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
 [ -f "$HOME/.docker/init-zsh.sh" ] && source "$HOME/.docker/init-zsh.sh"
 
 # Aliases
-alias cbr='git branch --sort=-committerdate | fzf --header "Checkout Recent Branch" --preview "git diff {1} --color=always | delta" --pointer="" | xargs git checkout'
+alias cbr='git branch --sort=-committerdate | fzf --header "Checkout Recent Branch" --preview "git diff {1} --color=always | delta" --pointer=" " | xargs git checkout'
 alias tldrf='tldr --list | fzf --preview "tldr {1} --color=always" --preview-window=right,70% | xargs tldr'
 alias k='kubectl'
 alias air='~/.air'
@@ -102,15 +103,21 @@ setopt hist_verify
 # Completion using arrow keys (based on history)
 bindkey '^[[A' history-search-backward
 bindkey '^[[B' history-search-forward
-source <(kubectl completion zsh)
 
+# Load completions silently to avoid console output
+if command -v kubectl &> /dev/null; then
+  source <(kubectl completion zsh 2>/dev/null)
+fi
 
-# Load Angular CLI autocompletion.
-source <(ng completion script)
+# Load Angular CLI autocompletion silently
+if command -v ng &> /dev/null; then
+  source <(ng completion script 2>/dev/null)
+fi
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+# Load NVM bash completion silently
+[ -s "$NVM_DIR/bash_completion" ] && source "$NVM_DIR/bash_completion" 2>/dev/null
 
-
-export PATH=$PATH:$(go env GOPATH)/bin
+# Go configuration - only if go is installed
+if command -v go &> /dev/null; then
+  export PATH=$PATH:$(go env GOPATH 2>/dev/null)/bin
+fi

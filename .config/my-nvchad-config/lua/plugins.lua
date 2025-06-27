@@ -243,17 +243,28 @@ return {
       },
     },
     config = function(_, opts)
-      require("avante").setup(opts)
-      require("copilot").setup({
-        suggestion = {
-          enabled = true,
-          auto_trigger = true,
-          keymap = {
-            accept = "<C-l>",
-          },
-        },
-        panel = { enabled = false },
-      })
+      -- Check if copilot is available and authenticated before setting up avante
+      local function setup_avante()
+        -- First check if copilot is available
+        local copilot_ok = pcall(require, "copilot")
+        if not copilot_ok then
+          vim.notify("Copilot not available, disabling avante.nvim", vim.log.levels.WARN)
+          return
+        end
+        
+        -- Try to setup avante even if copilot is not authenticated
+        -- The plugin will handle the authentication internally
+        local avante_ok, avante = pcall(require, "avante")
+        if avante_ok then
+          avante.setup(opts)
+          vim.notify("avante.nvim configured successfully", vim.log.levels.INFO)
+        else
+          vim.notify("Failed to load avante.nvim", vim.log.levels.WARN)
+        end
+      end
+      
+      -- Try to setup with a delay to ensure Copilot is ready
+      vim.defer_fn(setup_avante, 1000)
     end,
   },
 
@@ -264,6 +275,67 @@ return {
       require("which-key").setup({})
       vim.api.nvim_create_user_command("ReloadWhichKey", function()
         require("which-key").setup({})
+      end, {})
+    end,
+  },
+
+  -- Copilot setup - must be before avante.nvim
+  {
+    "zbirenbaum/copilot.lua",
+    event = "VeryLazy",
+    config = function()
+      -- Only setup copilot if we're in a proper workspace
+      local function setup_copilot()
+        local ok, copilot = pcall(require, "copilot")
+        if ok then
+          -- Check if we're in a valid directory
+          local cwd = vim.fn.getcwd()
+          if cwd and cwd ~= "" and cwd ~= "/" then
+            copilot.setup({
+              suggestion = {
+                enabled = true,
+                auto_trigger = true,
+                keymap = {
+                  accept = "<C-l>",
+                },
+              },
+              panel = { enabled = false },
+              filetypes = {
+                markdown = true,
+                help = true,
+              },
+            })
+            
+            -- Don't try to authenticate automatically - let user do it manually
+            -- This prevents the error messages on startup
+          else
+            vim.notify("Copilot: Not in a valid workspace directory", vim.log.levels.INFO)
+          end
+        else
+          vim.notify("Failed to load copilot.lua", vim.log.levels.WARN)
+        end
+      end
+      
+      -- Try to setup immediately, but also schedule a retry
+      setup_copilot()
+      vim.defer_fn(setup_copilot, 500)
+      
+      -- Add a user command to help with authentication
+      vim.api.nvim_create_user_command("CopilotAuth", function()
+        local ok, copilot = pcall(require, "copilot")
+        if ok then
+          vim.notify("Starting Copilot authentication...", vim.log.levels.INFO)
+          local auth_ok = pcall(function()
+            require("copilot.auth").get_oauth_token()
+          end)
+          if auth_ok then
+            vim.notify("Copilot authentication successful!", vim.log.levels.INFO)
+          else
+            vim.notify("Copilot authentication failed. Please try again.", vim.log.levels.ERROR)
+          end
+        else
+          vim.notify("Copilot not available", vim.log.levels.ERROR)
+        end
       end, {})
     end,
   },
