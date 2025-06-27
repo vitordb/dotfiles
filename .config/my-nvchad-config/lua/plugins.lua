@@ -189,6 +189,7 @@ return {
         max_height = 10,
         stages = "fade",
         timeout = 3000,
+        background_colour = "#000000",
       })
     end,
   },
