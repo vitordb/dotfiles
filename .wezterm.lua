@@ -22,8 +22,18 @@ config.color_scheme = 'Vacuous 2 (terminal.sexy)'
 -- 	brights = { "#214969", "#E52E2E", "#44FFB1", "#FFE073", "#A277FF", "#a277ff", "#24EAF7", "#24EAF7" },
 -- }
 
+-- Font config
 config.font = wezterm.font("JetBrainsMono Nerd Font Mono", {weight="Regular", stretch="Normal", style="Normal"})
-config.font_size = 15
+
+-- Font size: 15 for Linux, 17 for macOS
+do
+  local triple = wezterm.target_triple or ''
+  if triple:find('apple') or triple:find('darwin') or triple:find('macos') then
+    config.font_size = 17
+  else
+    config.font_size = 15
+  end
+end
 
 config.enable_tab_bar = false
 
