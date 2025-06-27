@@ -46,14 +46,6 @@ map("n", "<leader>at", function() require("avante").toggle() end, { desc = "Avan
 map("v", "<leader>ae", function() require("avante").edit() end, { desc = "Avante: Editar código selecionado" })
 map("n", "<leader>as", function() require("avante").get_suggestion():suggest() end, { desc = "Avante: Sugerir código (Smart Tab)" })
 
--- Mapeamentos para Transparent.nvim
-map("n", "<leader>tt", function() require("transparent").toggle() end, { desc = "Alternar transparência" })
-map("n", "<leader>tc", function() require("transparent").clear() end, { desc = "Limpar transparência" })
-map("n", "<leader>td", function() 
-  require("transparent").clear() 
-  vim.notify("Transparência desativada", vim.log.levels.INFO)
-end, { desc = "Desativar transparência" })
-
 -- Atalhos para Noice.nvim (notificações e logs)
 map("n", "<leader>nh", ":Noice history<CR>", { desc = "Noice: Histórico de notificações" })
 map("n", "<leader>nl", ":Noice last<CR>", { desc = "Noice: Última notificação" })
@@ -107,3 +99,7 @@ map("n", "<leader>gC", function()
     end,
   })
 end, { desc = "Go: Run package tests with coverage in current file's directory (Noice notification)" })
+
+map("n", "<leader>tt", function()
+  require("base46").toggle_transparency()
+end, { desc = "Toggle transparency" })

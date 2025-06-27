@@ -23,7 +23,7 @@ config.color_scheme = 'Vacuous 2 (terminal.sexy)'
 -- }
 
 config.font = wezterm.font("JetBrainsMono Nerd Font Mono", {weight="Regular", stretch="Normal", style="Normal"})
-config.font_size = 17
+config.font_size = 15
 
 config.enable_tab_bar = false
 

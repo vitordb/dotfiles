@@ -58,6 +58,9 @@ fi
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
 
+# Ensure NVM uses default version
+[ -s "$NVM_DIR/nvm.sh" ] && nvm use default >/dev/null 2>&1
+
 # Flutter configuration
 export PATH="$PATH:$HOME/flutter/bin"
 
