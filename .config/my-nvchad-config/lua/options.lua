@@ -18,3 +18,8 @@ o.number = true -- shows absolute line number on cursor line (when relative numb
 -- search settings
 o.ignorecase = true -- ignore case when searching
 o.smartcase = true -- if you include mixed case in your search, assumes you want case-sensitive
+
+-- Folding sempre ativado, mas tudo aberto por padrão
+o.foldenable = true
+o.foldlevel = 99
+o.foldlevelstart = 99

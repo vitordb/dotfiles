@@ -29,7 +29,7 @@ config.font = wezterm.font("JetBrainsMono Nerd Font Mono", {weight="Regular", st
 do
   local triple = wezterm.target_triple or ''
   if triple:find('apple') or triple:find('darwin') or triple:find('macos') then
-    config.font_size = 17
+    config.font_size = 18
   else
     config.font_size = 15
   end

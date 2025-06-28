@@ -194,6 +194,15 @@ return {
     end,
   },
 
+--   {
+--   "folke/zen-mode.nvim",
+--   opts = {
+--     -- your configuration comes here
+--     -- or leave it empty to use the default settings
+--     -- refer to the configuration section below
+--   }
+-- },
+
   {
     "yetone/avante.nvim",
     build = "make",
@@ -338,6 +347,37 @@ return {
           vim.notify("Copilot not available", vim.log.levels.ERROR)
         end
       end, {})
+    end,
+  },
+
+  {
+    "kevinhwang91/nvim-ufo",
+    dependencies = { "kevinhwang91/promise-async", "nvim-treesitter/nvim-treesitter" },
+    event = "BufReadPost",
+    opts = {
+      provider_selector = function()
+        return { 'treesitter', 'indent' }
+      end,
+    },
+    config = function(_, opts)
+      require('ufo').setup(opts)
+      vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
+      vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
+    end,
+  },
+  {
+    "luukvbaal/statuscol.nvim",
+    config = function()
+      local builtin = require("statuscol.builtin")
+      require("statuscol").setup({
+        relculright = true,
+        segments = {
+          { text = { builtin.foldfunc }, click = "v:lua.ScFa" },
+          { sign = { namespace = { "diagnostic/signs" }, maxwidth = 2, auto = true }, click = "v:lua.ScSa" },
+          { text = { builtin.lnumfunc }, click = "v:lua.ScLa" },
+          { sign = { name = { ".*" }, maxwidth = 2, colwidth = 1, auto = true, wrap = true }, click = "v:lua.ScSa" },
+        }
+      })
     end,
   },
 }
