@@ -7,7 +7,7 @@ local config = wezterm.config_builder()
 -- This is where you actually apply your config choices
 --
 
-config.color_scheme = 'Vacuous 2 (terminal.sexy)'
+config.color_scheme = 'Catppuccin Mocha'
 
 -- my coolnight colorscheme
 -- config.colors = {
@@ -29,7 +29,7 @@ config.font = wezterm.font("JetBrainsMono Nerd Font Mono", {weight="Regular", st
 do
   local triple = wezterm.target_triple or ''
   if triple:find('apple') or triple:find('darwin') or triple:find('macos') then
-    config.font_size = 18
+    config.font_size = 19
   else
     config.font_size = 15
   end

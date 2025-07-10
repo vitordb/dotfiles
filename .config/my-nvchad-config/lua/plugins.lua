@@ -24,6 +24,9 @@ return {
     dependencies = { "L3MON4D3/LuaSnip", "rafamadriz/friendly-snippets" },
     event = "InsertEnter",
     opts = {
+      enabled = function()
+        return vim.b.completion ~= false
+      end,
       completion = { documentation = { auto_show = false } },
       keymap = {
         preset = "super-tab",

@@ -23,3 +23,13 @@ o.smartcase = true -- if you include mixed case in your search, assumes you want
 o.foldenable = true
 o.foldlevel = 99
 o.foldlevelstart = 99
+
+-- Transparência total para floats do LSP, signature help, autocomplete, etc
+vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
+vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
+vim.api.nvim_set_hl(0, "LspSignatureActiveParameter", { bg = "none" })
+vim.api.nvim_set_hl(0, "LspInfoBorder", { bg = "none" })
+vim.api.nvim_set_hl(0, "LspFloatWinBorder", { bg = "none" })
+vim.api.nvim_set_hl(0, "LspFloatWinNormal", { bg = "none" })
+vim.api.nvim_set_hl(0, "CmpDocumentation", { bg = "none" })
+vim.api.nvim_set_hl(0, "Pmenu", { bg = "none" })
