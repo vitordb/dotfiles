@@ -15,7 +15,7 @@ Este repositório contém minhas configurações pessoais de desenvolvimento, ot
 │           ├── plugins.lua
 │           └── ...
 ├── .zshrc             # Configuração do Zsh
-├── .tmux.conf         # Configuração do Tmux
+├── tmux.conf          # Configuração do Tmux
 ├── .wezterm.lua       # Configuração do WezTerm
 ├── install.sh         # Script para criar todos os symlinks
 └── ...
@@ -119,7 +119,7 @@ Para garantir o funcionamento correto das configurações, instale as seguintes 
 
 - **Zsh**: `.zshrc` com alias e configurações personalizadas.
 - **WezTerm**: `.wezterm.lua` para terminal customizado.
-- **Tmux**: `.tmux.conf` com atalhos, temas e plugins configurados.
+- **Tmux**: `tmux.conf` com atalhos, temas e plugins configurados.
 - **Neovim**: Configurações organizadas em `.config/nvim` (linkadas para `my-nvchad-config`).
 
 ---

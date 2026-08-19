@@ -20,6 +20,6 @@ echo "✅ Link simbólico do Neovim criado: $NVIM_DEST -> $NVIM_SRC"
 # Symlinks para arquivos na raiz do diretório home
 ln -sf "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
 ln -sf "$DOTFILES_DIR/.wezterm.lua" "$HOME/.wezterm.lua"
-ln -sf "$DOTFILES_DIR/.tmux.conf" "$HOME/.tmux.conf"
+ln -sf "$DOTFILES_DIR/tmux.conf" "$HOME/.tmux.conf"
 
 echo "✅ Symlinks de dotfiles criados com sucesso!" 
