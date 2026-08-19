@@ -20,6 +20,7 @@ brew "ripgrep"
 brew "fd"
 
 # Editor, multiplexador e toolchain
+brew "node"                         # o mason precisa de npm pros LSP de ts/html/css
 brew "neovim"
 brew "tmux"
 brew "go"                           # gopls e go.nvim

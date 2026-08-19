@@ -109,11 +109,11 @@ install_packages_linux() {
     $sudo apt-get update
     $sudo apt-get install -y \
       zsh git curl tmux neovim golang-go ripgrep fd-find fzf zoxide \
-      eza git-delta tealdeer
+      eza git-delta tealdeer nodejs npm
   elif command -v dnf >/dev/null 2>&1; then
     $sudo dnf install -y \
       zsh git curl tmux neovim golang ripgrep fd-find fzf zoxide \
-      eza git-delta tealdeer
+      eza git-delta tealdeer nodejs npm
   else
     die "nenhum gerenciador de pacotes conhecido (apt-get ou dnf)"
   fi
