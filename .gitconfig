@@ -1,3 +1,15 @@
 [user]
 	name = Vitor Buchweitz
 	email = dbvitor@gmail.com
+
+# Configuração local não versionada (identidades de trabalho, etc).
+# Git ignora silenciosamente se o arquivo não existir.
+[include]
+	path = ~/.gitconfig-local
+
+[pull]
+	rebase = true
+[fetch]
+	prune = true
+[rebase]
+	autoStash = true
