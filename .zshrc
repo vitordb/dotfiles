@@ -23,24 +23,27 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
-# System-specific settings
+# Só o que é realmente específico de sistema
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  # macOS-specific configurations
   export PATH="/opt/homebrew/bin:$PATH"
   source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
-  alias ls="eza --icons=always"
+fi
 
-  # Zoxide initialization
-  if command -v zoxide &> /dev/null; then
-    eval "$(zoxide init zsh)"
-  fi
+# O install.sh instala eza nos dois sistemas. Antes o eza só era usado no
+# macOS e o ramo do Linux procurava pelo "exa", nome antigo do projeto que já
+# não existe nos repos, então lá caía sempre no ls pelado.
+if command -v eza &> /dev/null; then
+  alias ls="eza --icons=always"
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  alias ls="ls -G"            # BSD ls não conhece --color
 else
-  # Linux-specific configurations
-  if command -v exa &> /dev/null; then
-    alias ls="exa --icons"
-  else
-    alias ls="ls --color=auto"
-  fi
+  alias ls="ls --color=auto"  # GNU ls
+fi
+
+# O zoxide também só era inicializado no macOS, então o comando z não existia
+# no Linux nem com o binário instalado.
+if command -v zoxide &> /dev/null; then
+  eval "$(zoxide init zsh)"
 fi
 
 # NVM - lazy loading para evitar lentidão no startup
