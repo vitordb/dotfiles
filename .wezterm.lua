@@ -35,7 +35,7 @@ do
   end
 end
 
-config.enable_tab_bar = false
+config.enable_tab_bar = true
 
 config.window_decorations = "RESIZE"
 config.window_background_opacity = 0.75
