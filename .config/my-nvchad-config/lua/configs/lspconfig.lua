@@ -1,9 +1,8 @@
 require("nvchad.configs.lspconfig").defaults()
-local servers = { "html", "cssls", "gopls" }
+local servers = { "html", "cssls", "gopls", "ts_ls" }
 
 -- Configuração específica para o tsserver (ts_ls)
-local lspconfig = require("lspconfig")
-lspconfig.ts_ls.setup({
+vim.lsp.config('ts_ls', {
   settings = {
     typescript = {
       format = {
