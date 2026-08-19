@@ -7,9 +7,15 @@
 [include]
 	path = ~/.gitconfig-local
 
+# pull só faz fast-forward: nunca cria merge nem reescreve história.
+# Se a branch divergiu, ele para e avisa em vez de decidir sozinho.
 [pull]
-	rebase = true
+	ff = only
 [fetch]
 	prune = true
 [rebase]
 	autoStash = true
+
+[alias]
+	# Descarta o estado local e deixa a branch idêntica ao upstream.
+	sync = !git fetch origin && git reset --hard @{u}
