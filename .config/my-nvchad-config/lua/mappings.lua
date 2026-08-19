@@ -18,34 +18,6 @@ map("n", "<leader>fm", function()
   require("conform").format()
 end, { desc = "Format file" })
 
---[[ -- Mapeamentos do CopilotChat desabilitados
-map("n", "<leader>cc", "<cmd>CopilotChatToggle<CR>", { desc = "Alternar chat do Copilot" })
-map(
-  "v",
-  "<leader>ce",
-  ":<C-u>CopilotChatExplain<CR>",
-  { desc = "Copilot: Explicar código selecionado" }
-)
-map(
-  "v",
-  "<leader>ct",
-  ":<C-u>CopilotChatTests<CR>",
-  { desc = "Copilot: Gerar testes para o código" }
-)
-map("n", "<leader>cq", function()
-  vim.ui.input({ prompt = "Copilot: " }, function(input)
-    if input then
-      vim.cmd("CopilotChat " .. input)
-    end
-  end)
-end, { desc = "Copilot: Chat rápido (prompt)" })
---]]
-
--- Mapeamentos para Avante.nvim
-map("n", "<leader>at", function() require("avante").toggle() end, { desc = "Avante: Alternar painel de chat" })
-map("v", "<leader>ae", function() require("avante").edit() end, { desc = "Avante: Editar código selecionado" })
-map("n", "<leader>as", function() require("avante").get_suggestion():suggest() end, { desc = "Avante: Sugerir código (Smart Tab)" })
-
 -- Atalhos para Noice.nvim (notificações e logs)
 map("n", "<leader>nh", ":Noice history<CR>", { desc = "Noice: Histórico de notificações" })
 map("n", "<leader>nl", ":Noice last<CR>", { desc = "Noice: Última notificação" })
