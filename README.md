@@ -52,12 +52,16 @@ apagado.
 
 No Linux o script instala o Neovim a partir do release oficial quando o pacote
 da distro é anterior ao 0.11. O Ubuntu 24.04, por exemplo, entrega o 0.9.5, no
-qual esta config nem carrega (usa `vim.uv` e `vim.lsp.config`).
+qual esta config nem carrega (usa `vim.uv` e `vim.lsp.config`). O Fedora já
+entrega o 0.12, então lá esse fallback não chega a rodar.
 
-> Testado ponta a ponta em container limpo de **Ubuntu 24.04** e no **macOS**.
-> O ramo `dnf` (Fedora e derivados) foi escrito mas não foi exercitado.
-> `eza`, `git-delta`, `lazygit`, `tealdeer` e `kubectl` não estão nos repos
-> padrão de toda distro; instale à parte se algum alias reclamar.
+> Testado ponta a ponta em container limpo de **Ubuntu 24.04** e **Fedora**,
+> e no **macOS**.
+
+No fim da execução o script informa o que não conseguiu instalar e o efeito
+prático de cada ausência. Hoje isso se resume a `lazygit` e `kubectl`, que não
+estão nos repositórios padrão de nenhuma das duas distros: o primeiro precisa
+de COPR ou download direto, o segundo de repositório à parte.
 
 ### Passos que sobram
 

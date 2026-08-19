@@ -108,10 +108,12 @@ install_packages_linux() {
   if command -v apt-get >/dev/null 2>&1; then
     $sudo apt-get update
     $sudo apt-get install -y \
-      zsh git curl tmux neovim golang-go ripgrep fd-find fzf zoxide
+      zsh git curl tmux neovim golang-go ripgrep fd-find fzf zoxide \
+      eza git-delta tealdeer
   elif command -v dnf >/dev/null 2>&1; then
     $sudo dnf install -y \
-      zsh git curl tmux neovim golang ripgrep fd-find fzf zoxide eza git-delta
+      zsh git curl tmux neovim golang ripgrep fd-find fzf zoxide \
+      eza git-delta tealdeer
   else
     die "nenhum gerenciador de pacotes conhecido (apt-get ou dnf)"
   fi
@@ -123,9 +125,6 @@ install_packages_linux() {
   fi
 
   ensure_modern_neovim "$sudo"
-
-  warn "eza, git-delta, lazygit, tealdeer e kubectl não estão nos repos padrão"
-  warn "de toda distro. Instale à parte se algum alias reclamar."
 }
 
 # A config usa vim.uv (0.10+) e vim.lsp.config (0.11+). O neovim empacotado
@@ -202,6 +201,33 @@ bootstrap_tmux() {
     "$HOME/.tmux/plugins/tpm" "tpm"
 }
 
+# Em vez de listar de cor o que falta em cada distro, olha o que de fato não
+# ficou instalado. Nada aqui é essencial, mas cada um sustenta algum alias.
+report_missing_optional() {
+  local missing="" c
+  for c in eza delta lazygit tldr kubectl; do
+    command -v "$c" >/dev/null 2>&1 || missing="$missing $c"
+  done
+  [ -n "$missing" ] || return 0
+
+  warn "não encontrados:$missing"
+  case "$missing" in
+    *eza*)     warn "  eza     -> o alias ls cai pro ls --color=auto" ;;
+  esac
+  case "$missing" in
+    *delta*)   warn "  delta   -> o alias cbr perde o preview do diff" ;;
+  esac
+  case "$missing" in
+    *lazygit*) warn "  lazygit -> o atalho <leader>lg do nvim não abre" ;;
+  esac
+  case "$missing" in
+    *tldr*)    warn "  tldr    -> o alias tldrf não funciona" ;;
+  esac
+  case "$missing" in
+    *kubectl*) warn "  kubectl -> o alias k não funciona" ;;
+  esac
+}
+
 # ------------------------------------------------------------------ symlinks
 
 create_symlinks() {
@@ -224,6 +250,8 @@ case "$OS" in
   macos) install_packages_macos ;;
   linux) install_packages_linux ;;
 esac
+
+report_missing_optional
 
 bootstrap_shell
 bootstrap_nvm
