@@ -15,9 +15,11 @@ Este repositório contém minhas configurações pessoais de desenvolvimento, ot
 │           ├── plugins.lua
 │           └── ...
 ├── .zshrc             # Configuração do Zsh
+├── .gitconfig         # Configuração do Git
 ├── tmux.conf          # Configuração do Tmux
 ├── .wezterm.lua       # Configuração do WezTerm
-├── install.sh         # Script para criar todos os symlinks
+├── Brewfile           # Dependências instaladas no macOS
+├── install.sh         # Bootstrap completo: pacotes, plugins e symlinks
 └── ...
 ```
 
@@ -25,50 +27,44 @@ Este repositório contém minhas configurações pessoais de desenvolvimento, ot
 
 ## Instalação Rápida
 
-Para configurar um novo ambiente em qualquer máquina (Linux ou macOS), siga os passos abaixo.
-
-### 1. Pré-requisitos
-
-Certifique-se de que você tem os seguintes programas instalados:
-- `git`
-- `nvim` (Neovim 0.9.0 ou superior)
-- `make` (para compilar alguns plugins)
-- (Opcional) Uma [Nerd Font](https://www.nerdfonts.com/) para os ícones.
-
-### 2. Clonar o Repositório
-
-Clone este repositório para o local de sua preferência. A convenção é usar `~/.dotfiles`.
+Em uma máquina nova, do zero:
 
 ```bash
-git clone https://github.com/seu-usuario/dotfiles.git ~/.dotfiles
-```
-
-### 3. Executar o Script de Instalação
-
-O script `install.sh` criará todos os links simbólicos necessários para as suas configurações, incluindo o Neovim.
-
-```bash
+git clone https://github.com/vitordb/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 ./install.sh
 ```
 
-O script irá:
-- Remover qualquer configuração existente em `~/.config/nvim`.
-- Criar um link simbólico de `~/.config/nvim` para o diretório `my-nvchad-config` deste repositório:
+O repositório não precisa ficar em `~/.dotfiles`. O script descobre o próprio
+caminho, então funciona de onde você clonar.
 
-```bash
-ln -sf ~/.dotfiles/.config/my-nvchad-config ~/.config/nvim
-```
+### O que o script faz
 
-### 4. Iniciar o Neovim
+1. **Instala as dependências.** No macOS, via Homebrew e o `Brewfile` (instala o
+   próprio Homebrew se não houver). No Linux, via `apt-get` ou `dnf`.
+2. **Faz o bootstrap dos gerenciadores de plugin:** oh-my-zsh e seus plugins,
+   powerlevel10k, nvm e o tpm do tmux.
+3. **Cria os symlinks** de zsh, git, tmux, WezTerm e Neovim.
 
-Abra o Neovim. O `lazy.nvim` irá automaticamente começar a instalar todos os plugins definidos.
+É idempotente: rodar de novo não duplica nada. Se já existir um arquivo de
+verdade no lugar de um symlink, ele é movido para `.bak-<timestamp>` em vez de
+apagado.
 
-```bash
-nvim
-```
+> O caminho Linux do script foi escrito mas **não foi testado**. Só o macOS foi
+> exercitado de fato. Revise os nomes dos pacotes da sua distro antes de confiar.
 
-Aguarde a conclusão do processo. Pode ser necessário reiniciar o Neovim uma vez após a instalação.
+### Passos que sobram
+
+Dois passos precisam de sessão interativa e o script não faz por você:
+
+- No tmux, `prefix + I` (prefix é `Ctrl-a`) para o tpm baixar os plugins.
+- Abrir o `nvim` uma vez, para o lazy.nvim se instalar e baixar os plugins.
+
+### Configuração local, fora do repo
+
+O `.gitconfig` inclui `~/.gitconfig-local`, que **não** é versionado. É onde
+ficam identidades de trabalho e qualquer coisa específica da máquina. O git
+ignora silenciosamente se o arquivo não existir.
 
 ---
 
