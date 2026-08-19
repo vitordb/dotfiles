@@ -257,4 +257,8 @@ return {
       })
     end,
   },
+  -- Vem do NvChad e é carga real: traz o nvim-autopairs, a config do LuaSnip e
+  -- desliga o nvim-cmp. Estava no antigo lua/plugins/init.lua, que duplicava os
+  -- specs de conform e lspconfig já definidos aqui em cima.
+  { import = "nvchad.blink.lazyspec" },
 }
