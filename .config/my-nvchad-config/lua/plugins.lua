@@ -151,6 +151,16 @@ return {
     ft = { "go", "gomod" },
     build = ':lua require("go.install").update_all_sync()',
     config = function()
+      -- go.nvim chama vim.lsp.condelens (typo dele) no fallback de codelens do
+      -- nvim 0.11, e isso estoura ON_ATTACH_ERROR toda vez que o gopls conecta.
+      -- Definir o shim antes faz o plugin pegar o caminho bom, sem perder o
+      -- codelens. Remover quando o upstream corrigir lua/go/lsp.lua:47.
+      if not vim.lsp.codelens.enable then
+        vim.lsp.codelens.enable = function(_, opts)
+          vim.lsp.codelens.refresh(opts or {})
+        end
+      end
+
       require("go").setup({
         lsp_cfg = true,
         lsp_gofumpt = true,
