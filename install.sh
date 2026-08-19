@@ -94,26 +94,76 @@ install_packages_macos() {
   brew bundle --file="$DOTFILES_DIR/Brewfile"
 }
 
-# ATENÇÃO: este caminho não foi testado. Foi escrito a partir da lista de
-# dependências do macOS, mas nunca rodou numa máquina Linux de verdade.
-# Revise os nomes dos pacotes na sua distro antes de confiar.
 install_packages_linux() {
   step "Instalando pacotes (Linux)"
-  warn "caminho Linux NÃO TESTADO, revise antes de confiar"
+
+  # Em container ou como root não existe (nem precisa de) sudo.
+  local sudo=""
+  if [ "$(id -u)" -ne 0 ]; then
+    command -v sudo >/dev/null 2>&1 \
+      || die "sem root e sem sudo: não dá pra instalar os pacotes"
+    sudo="sudo"
+  fi
 
   if command -v apt-get >/dev/null 2>&1; then
-    sudo apt-get update
-    sudo apt-get install -y \
+    $sudo apt-get update
+    $sudo apt-get install -y \
       zsh git curl tmux neovim golang-go ripgrep fd-find fzf zoxide
   elif command -v dnf >/dev/null 2>&1; then
-    sudo dnf install -y \
+    $sudo dnf install -y \
       zsh git curl tmux neovim golang ripgrep fd-find fzf zoxide eza git-delta
   else
     die "nenhum gerenciador de pacotes conhecido (apt-get ou dnf)"
   fi
 
-  warn "eza, git-delta, lazygit, tealdeer e kubectl podem não estar nos repos"
-  warn "padrão da sua distro. Instale à parte se algum alias reclamar."
+  # Debian e Ubuntu entregam o fd como "fdfind". O telescope procura por "fd".
+  if ! command -v fd >/dev/null 2>&1 && command -v fdfind >/dev/null 2>&1; then
+    $sudo ln -sf "$(command -v fdfind)" /usr/local/bin/fd
+    ok "fd apontando pro fdfind"
+  fi
+
+  ensure_modern_neovim "$sudo"
+
+  warn "eza, git-delta, lazygit, tealdeer e kubectl não estão nos repos padrão"
+  warn "de toda distro. Instale à parte se algum alias reclamar."
+}
+
+# A config usa vim.uv (0.10+) e vim.lsp.config (0.11+). O neovim empacotado
+# pelas distros costuma ser velho demais: o Ubuntu 24.04 entrega 0.9.5, onde a
+# config nem carrega. Nesse caso, instala o binário oficial.
+ensure_modern_neovim() {
+  local sudo="${1:-}"
+
+  if command -v nvim >/dev/null 2>&1 &&
+     [ "$(nvim --headless -c 'lua io.write(vim.fn.has("nvim-0.11"))' \
+          -c 'qa!' 2>/dev/null)" = "1" ]; then
+    ok "neovim $(nvim --version | head -1 | awk '{print $2}') serve"
+    return 0
+  fi
+
+  warn "neovim ausente ou anterior ao 0.11, instalando o release oficial"
+
+  local arch tarball
+  case "$(uname -m)" in
+    x86_64)          arch=x86_64 ;;
+    aarch64|arm64)   arch=arm64 ;;
+    *) warn "arquitetura $(uname -m) sem release oficial, pulando"; return 0 ;;
+  esac
+  tarball="nvim-linux-${arch}.tar.gz"
+
+  local tmp; tmp="$(mktemp -d)"
+  if ! curl -fsSL -o "$tmp/$tarball" \
+       "https://github.com/neovim/neovim/releases/latest/download/$tarball"; then
+    warn "falhou baixar o $tarball, seguindo com o neovim que existir"
+    rm -rf "$tmp"; return 0
+  fi
+
+  $sudo rm -rf /opt/nvim
+  $sudo mkdir -p /opt/nvim
+  $sudo tar -xzf "$tmp/$tarball" -C /opt/nvim --strip-components=1
+  $sudo ln -sf /opt/nvim/bin/nvim /usr/local/bin/nvim
+  rm -rf "$tmp"
+  ok "neovim $(/opt/nvim/bin/nvim --version | head -1 | awk '{print $2}') instalado em /opt/nvim"
 }
 
 # ----------------------------------------------------------------- bootstrap

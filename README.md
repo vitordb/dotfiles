@@ -50,8 +50,14 @@ caminho, então funciona de onde você clonar.
 verdade no lugar de um symlink, ele é movido para `.bak-<timestamp>` em vez de
 apagado.
 
-> O caminho Linux do script foi escrito mas **não foi testado**. Só o macOS foi
-> exercitado de fato. Revise os nomes dos pacotes da sua distro antes de confiar.
+No Linux o script instala o Neovim a partir do release oficial quando o pacote
+da distro é anterior ao 0.11. O Ubuntu 24.04, por exemplo, entrega o 0.9.5, no
+qual esta config nem carrega (usa `vim.uv` e `vim.lsp.config`).
+
+> Testado ponta a ponta em container limpo de **Ubuntu 24.04** e no **macOS**.
+> O ramo `dnf` (Fedora e derivados) foi escrito mas não foi exercitado.
+> `eza`, `git-delta`, `lazygit`, `tealdeer` e `kubectl` não estão nos repos
+> padrão de toda distro; instale à parte se algum alias reclamar.
 
 ### Passos que sobram
 
