@@ -26,6 +26,7 @@ brew "tmux"
 brew "go"                           # gopls e go.nvim
 
 # GUI e fontes
+cask "tailscale"                    # rede privada ate o dev box
 cask "wezterm"
 cask "font-meslo-lg-nerd-font"
 cask "font-caskaydia-cove-nerd-font"

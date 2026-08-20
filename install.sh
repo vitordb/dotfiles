@@ -195,6 +195,24 @@ bootstrap_nvm() {
   ok "nvm instalado"
 }
 
+# O acesso ao dev box passa por Tailscale, entao a maquina nao precisa de porta
+# aberta na internet. Aqui so instalamos: o login e interativo e fica por sua
+# conta (tailscale up).
+bootstrap_tailscale() {
+  step "Bootstrap do Tailscale"
+  if command -v tailscale >/dev/null 2>&1; then
+    ok "tailscale ja instalado"
+    return 0
+  fi
+  if [ "$OS" = "linux" ]; then
+    curl -fsSL https://tailscale.com/install.sh | sh >/dev/null 2>&1 \
+      && ok "tailscale instalado, rode: sudo tailscale up" \
+      || warn "falhou instalar o tailscale, siga em https://tailscale.com/download"
+  else
+    ok "no macOS vem pelo Brewfile"
+  fi
+}
+
 bootstrap_tmux() {
   step "Bootstrap do tmux"
   clone_once https://github.com/tmux-plugins/tpm.git \
@@ -256,6 +274,7 @@ report_missing_optional
 bootstrap_shell
 bootstrap_nvm
 bootstrap_tmux
+bootstrap_tailscale
 create_symlinks
 
 step "Pronto"
