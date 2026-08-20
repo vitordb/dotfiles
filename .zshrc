@@ -214,3 +214,22 @@ code() {
 
 # fubectl - fancy kubectl with fzf
 [ -f ~/.local/bin/fubectl.source ] && source ~/.local/bin/fubectl.source
+
+# Conecta na maquina de desenvolvimento e entra sempre na MESMA sessao tmux,
+# entao Mac, iPad e qualquer outro cliente compartilham o mesmo estado: o que
+# ficou aberto num aparece no outro, porque e literalmente o mesmo processo.
+#
+#   dev              -> sessao "main"
+#   dev revisao      -> sessao "revisao"
+#   dev --ssh        -> forca SSH, util em rede que bloqueia UDP (mosh usa UDP)
+dev() {
+  local usar_ssh=0
+  if [[ "$1" == "--ssh" ]]; then usar_ssh=1; shift; fi
+  local sessao="${1:-main}"
+
+  if (( usar_ssh )) || ! command -v mosh &> /dev/null; then
+    ssh -t devbox "tmux new -A -s ${(q)sessao}"
+  else
+    mosh devbox -- tmux new -A -s "$sessao"
+  fi
+}
