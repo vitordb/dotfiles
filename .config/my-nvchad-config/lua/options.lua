@@ -33,3 +33,18 @@ vim.api.nvim_set_hl(0, "LspFloatWinBorder", { bg = "none" })
 vim.api.nvim_set_hl(0, "LspFloatWinNormal", { bg = "none" })
 vim.api.nvim_set_hl(0, "CmpDocumentation", { bg = "none" })
 vim.api.nvim_set_hl(0, "Pmenu", { bg = "none" })
+
+-- Clipboard por OSC 52, só em sessão SSH.
+-- Numa máquina remota o nvim não alcança o clipboard do computador que está na
+-- sua frente. O OSC 52 resolve mandando o texto copiado pelo próprio terminal,
+-- como sequência de escape. Localmente não entra: o clipboard nativo do sistema
+-- é melhor e já funciona.
+-- Depende de "set -g set-clipboard on" no tmux, senão o escape não atravessa.
+if os.getenv("SSH_TTY") then
+  local osc52 = require("vim.ui.clipboard.osc52")
+  vim.g.clipboard = {
+    name = "OSC 52",
+    copy = { ["+"] = osc52.copy("+"), ["*"] = osc52.copy("*") },
+    paste = { ["+"] = osc52.paste("+"), ["*"] = osc52.paste("*") },
+  }
+end
