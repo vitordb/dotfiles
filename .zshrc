@@ -219,17 +219,28 @@ code() {
 # entao Mac, iPad e qualquer outro cliente compartilham o mesmo estado: o que
 # ficou aberto num aparece no outro, porque e literalmente o mesmo processo.
 #
-#   dev              -> sessao "main"
-#   dev revisao      -> sessao "revisao"
-#   dev --ssh        -> forca SSH, util em rede que bloqueia UDP (mosh usa UDP)
+# O destino vem de DEV_HOST (default devbox), entao o mesmo comando serve pra
+# mais de uma maquina sem duplicar a funcao.
+#
+#   dev                 -> devbox, sessao "main"
+#   dev revisao         -> devbox, sessao "revisao"
+#   DEV_HOST=frete dev  -> frete, sessao "main"
+#   dev --ssh           -> forca SSH, util em rede que bloqueia UDP (mosh usa UDP)
 dev() {
   local usar_ssh=0
   if [[ "$1" == "--ssh" ]]; then usar_ssh=1; shift; fi
   local sessao="${1:-main}"
+  local host="${DEV_HOST:-devbox}"
 
   if (( usar_ssh )) || ! command -v mosh &> /dev/null; then
-    ssh -t devbox "tmux new -A -s ${(q)sessao}"
+    ssh -t "$host" "tmux new -A -s ${(q)sessao}"
   else
-    mosh devbox -- tmux new -A -s "$sessao"
+    mosh "$host" -- tmux new -A -s "$sessao"
   fi
 }
+
+# Atalho pro notebook corporativo na tailnet. Aceita os mesmos argumentos:
+#   frete            -> sessao "main"
+#   frete revisao    -> sessao "revisao"
+#   frete --ssh      -> forca SSH
+frete() { DEV_HOST=frete dev "$@"; }
