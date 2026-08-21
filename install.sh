@@ -105,15 +105,30 @@ install_packages_linux() {
     sudo="sudo"
   fi
 
+  # Separados de proposito: os essenciais falham a instalacao se faltarem, os
+  # opcionais nao. O eza, o git-delta e o tealdeer so entraram no Ubuntu a
+  # partir do 23.10, e num 22.04 um "apt-get install" unico abortaria tudo por
+  # causa deles.
+  local essenciais opcionais
   if command -v apt-get >/dev/null 2>&1; then
+    essenciais="zsh git curl tmux neovim golang-go ripgrep fd-find fzf zoxide nodejs npm"
+    opcionais="eza git-delta tealdeer"
     $sudo apt-get update
-    $sudo apt-get install -y \
-      zsh git curl tmux neovim golang-go ripgrep fd-find fzf zoxide \
-      eza git-delta tealdeer nodejs npm
+    # shellcheck disable=SC2086
+    $sudo apt-get install -y $essenciais
+    for pkg in $opcionais; do
+      $sudo apt-get install -y -qq "$pkg" >/dev/null 2>&1 \
+        && ok "$pkg instalado" || warn "$pkg não existe nos repos desta versão"
+    done
   elif command -v dnf >/dev/null 2>&1; then
-    $sudo dnf install -y \
-      zsh git curl tmux neovim golang ripgrep fd-find fzf zoxide \
-      eza git-delta tealdeer nodejs npm
+    essenciais="zsh git curl tmux neovim golang ripgrep fd-find fzf zoxide nodejs npm"
+    opcionais="eza git-delta tealdeer"
+    # shellcheck disable=SC2086
+    $sudo dnf install -y $essenciais
+    for pkg in $opcionais; do
+      $sudo dnf install -y -q "$pkg" >/dev/null 2>&1 \
+        && ok "$pkg instalado" || warn "$pkg não existe nos repos desta versão"
+    done
   else
     die "nenhum gerenciador de pacotes conhecido (apt-get ou dnf)"
   fi
@@ -125,7 +140,43 @@ install_packages_linux() {
   fi
 
   ensure_modern_neovim "$sudo"
+  ensure_modern_node "$sudo"
   install_github_releases "$sudo"
+}
+
+# O mason precisa de npm para baixar os servidores de TS, HTML e CSS, e o
+# Claude Code exige node 18+. O Ubuntu 22.04 ainda entrega o node 12, que nao
+# serve para nenhum dos dois.
+ensure_modern_node() {
+  local sudo="${1:-}" maior
+  if command -v node >/dev/null 2>&1; then
+    maior="$(node --version 2>/dev/null | sed 's/^v//' | cut -d. -f1)"
+    if [ "${maior:-0}" -ge 18 ] 2>/dev/null; then
+      ok "node $(node --version) serve"
+      return 0
+    fi
+  fi
+
+  if ! command -v apt-get >/dev/null 2>&1; then
+    warn "node antigo e sem apt para atualizar; instale um node 18+ à mão"
+    return 0
+  fi
+
+  warn "node ausente ou anterior ao 18, instalando pelo NodeSource"
+  # Baixamos para arquivo em vez de "curl | $sudo bash": com $sudo vazio (root)
+  # o pipe viraria "| -E bash -", que nao e comando.
+  #
+  # E preciso remover o node da distro antes: o libnode-dev que vem junto do npm
+  # possui /usr/include/node/common.gypi, o mesmo arquivo do pacote do
+  # NodeSource, e o dpkg aborta com "trying to overwrite".
+  if curl -fsSL https://deb.nodesource.com/setup_22.x -o /tmp/nodesource.sh &&
+     $sudo bash /tmp/nodesource.sh >/dev/null 2>&1 &&
+     { $sudo apt-get remove -y -qq nodejs npm libnode-dev >/dev/null 2>&1 || true; } &&
+     $sudo apt-get install -y -qq nodejs >/dev/null 2>&1; then
+    ok "node $(node --version) instalado"
+  else
+    warn "falhou instalar node moderno: o mason não vai baixar os LSPs de ts/html/css"
+  fi
 }
 
 # Le a ultima tag de release sem depender de jq, que pode nao existir.
