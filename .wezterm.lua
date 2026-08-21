@@ -23,7 +23,13 @@ config.color_scheme = 'Catppuccin Mocha'
 -- }
 
 -- Font config
-config.font = wezterm.font("JetBrainsMono Nerd Font Mono", {weight="Regular", stretch="Normal", style="Normal"})
+config.font = wezterm.font_with_fallback({
+	{ family = "JetBrainsMono Nerd Font Mono", weight = "Regular", stretch = "Normal", style = "Normal" },
+	"Symbols Nerd Font Mono",
+	"Noto Sans Symbols2", -- glifos como U+23F5 (\u{23f5})
+	"Noto Sans Math",
+	"Noto Color Emoji",
+})
 
 -- Font size: 15 for Linux, 17 for macOS
 do
