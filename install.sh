@@ -125,6 +125,56 @@ install_packages_linux() {
   fi
 
   ensure_modern_neovim "$sudo"
+  install_github_releases "$sudo"
+}
+
+# Le a ultima tag de release sem depender de jq, que pode nao existir.
+github_latest_version() {
+  curl -fsSL "https://api.github.com/repos/$1/releases/latest" 2>/dev/null \
+    | grep -oE '"tag_name"[^,]*' | grep -oE 'v?[0-9][^"]*' | head -1 | sed 's/^v//'
+}
+
+# gh e lazygit nao estao nos repositorios do Ubuntu nem do Fedora. Sao
+# justamente os dois que sobravam no aviso do fim, entao vem do release oficial.
+# A API do GitHub tem limite por hora sem autenticacao: se falhar, avisamos e
+# seguimos, porque nenhum dos dois e essencial.
+install_github_releases() {
+  local sudo="${1:-}" arch_gh arch_lg v tmp
+  case "$(uname -m)" in
+    x86_64)        arch_gh=amd64; arch_lg=x86_64 ;;
+    aarch64|arm64) arch_gh=arm64; arch_lg=arm64 ;;
+    *) warn "arquitetura $(uname -m) sem release de gh/lazygit"; return 0 ;;
+  esac
+
+  if command -v gh >/dev/null 2>&1; then
+    ok "gh já instalado"
+  else
+    v="$(github_latest_version cli/cli)"
+    tmp="$(mktemp -d)"
+    if [ -n "$v" ] && curl -fsSL -o "$tmp/gh.tgz" \
+         "https://github.com/cli/cli/releases/download/v${v}/gh_${v}_linux_${arch_gh}.tar.gz"; then
+      tar -xzf "$tmp/gh.tgz" -C "$tmp"
+      $sudo install -m 755 "$tmp"/gh_*/bin/gh /usr/local/bin/gh && ok "gh $v instalado"
+    else
+      warn "não consegui baixar o gh, siga em https://cli.github.com"
+    fi
+    rm -rf "$tmp"
+  fi
+
+  if command -v lazygit >/dev/null 2>&1; then
+    ok "lazygit já instalado"
+  else
+    v="$(github_latest_version jesseduffield/lazygit)"
+    tmp="$(mktemp -d)"
+    if [ -n "$v" ] && curl -fsSL -o "$tmp/lg.tgz" \
+         "https://github.com/jesseduffield/lazygit/releases/download/v${v}/lazygit_${v}_Linux_${arch_lg}.tar.gz"; then
+      tar -xzf "$tmp/lg.tgz" -C "$tmp" lazygit
+      $sudo install -m 755 "$tmp/lazygit" /usr/local/bin/lazygit && ok "lazygit $v instalado"
+    else
+      warn "não consegui baixar o lazygit, siga em https://github.com/jesseduffield/lazygit"
+    fi
+    rm -rf "$tmp"
+  fi
 }
 
 # A config usa vim.uv (0.10+) e vim.lsp.config (0.11+). O neovim empacotado

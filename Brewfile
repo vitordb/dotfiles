@@ -14,6 +14,7 @@ brew "git-delta"                    # preview do alias cbr
 brew "tealdeer"                     # fornece o binário tldr
 brew "kubernetes-cli"               # alias k
 brew "lazygit"                      # plugin lazygit.nvim
+brew "gh"                           # GitHub CLI
 
 # Busca usada pelo telescope no nvim
 brew "ripgrep"
