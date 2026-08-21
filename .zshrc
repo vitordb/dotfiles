@@ -244,3 +244,7 @@ dev() {
 #   frete revisao    -> sessao "revisao"
 #   frete --ssh      -> forca SSH
 frete() { DEV_HOST=frete dev "$@"; }
+
+# Config específica desta máquina - pyenv, GOPRIVATE, tokens, o que não deve
+# virar público. Mesmo padrão do include ~/.gitconfig-local no .gitconfig.
+[ -f ~/.zshrc-local ] && source ~/.zshrc-local
